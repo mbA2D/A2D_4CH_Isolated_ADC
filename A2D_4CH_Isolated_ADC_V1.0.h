@@ -11,8 +11,10 @@
 
 #define A2D_4CH_ISO_ADC_LED_PIN         PC13
 
-//scaling
-#define A2D_4CH_ISO_ADC_V_REF			2.048
+#define A2D_4CH_ISO_ADC_NUM_CHANNELS	4
 
-#define A2D_4CH_ISO_ADC_DEFAULT_V_SCALING       	10.35 // (18.7k + 2k)/2k
+//scaling
+#define A2D_4CH_ISO_ADC_DEFAULT_V_SCALING   1.55 // (1.1k + 2k)/2k
 #define A2D_4CH_ISO_ADC_DEFAULT_V_OFFSET	0
+
+#define A2D_4CH_ISO_ADC_EEPROM_INIT_VAL		0x55 //0b01010101
