@@ -107,6 +107,16 @@ void A2D_4CH_Isolated_ADC::save_all_calibration()
 	EEPROM.put(_ee_addr_initialized, A2D_4CH_ISO_ADC_EEPROM_INIT_VAL);
 }
 
+float A2D_4CH_Isolated_ADC::get_cal_offset(uint8_t ch)
+{
+	return _v_offset[ch];
+}
+
+float A2D_4CH_Isolated_ADC::get_cal_gain(uint8_t ch)
+{
+	return _v_scaling[ch];
+}
+
 void A2D_4CH_Isolated_ADC::_init_cal_from_eeprom()
 {
 	//check the _ee_initialized byte
@@ -131,7 +141,15 @@ void A2D_4CH_Isolated_ADC::_init_cal_from_eeprom()
 
 void A2D_4CH_Isolated_ADC::set_led(bool state)
 {
-	digitalWrite(A2D_4CH_ISO_ADC_LED_PIN, state);
+	if(state)
+	{
+		digitalWrite(A2D_4CH_ISO_ADC_LED_PIN, A2D_4CH_ISO_ADC_LED_ON);
+	}
+	else
+	{
+		digitalWrite(A2D_4CH_ISO_ADC_LED_PIN, A2D_4CH_ISO_ADC_LED_OFF);
+	}
+	
 }
 
 float A2D_4CH_Isolated_ADC::_convert_adc_voltage_to_voltage(uint8_t ch, float voltage)

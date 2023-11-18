@@ -20,15 +20,17 @@ void setup() {
 }
 
 void loop() {
-	for(uint8_t ch = 0; ch < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
+	for(uint8_t ch = 0; ch < A2D_4CH_ISO_ADC_NUM_CHANNELS; ch++)
 	{
 		Serial.print("Ch ");
 		Serial.print(ch);
 		Serial.print("  At ADC: ");
-		Serial.print(adc.measure_raw_voltage(3), 5);
+		Serial.print(adc.measure_raw_voltage(ch), 5);
 		Serial.print("V,  At Input: ");
-		Serial.print(adc.measure_voltage(3), 5);
+		Serial.print(adc.measure_voltage(ch), 5);
 		Serial.println("V");
 	}
-	Serial.println("----------------")
+	Serial.println("----------------");
+	Serial.flush();
+	delay(500);
 }

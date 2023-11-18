@@ -36,6 +36,8 @@ class A2D_4CH_Isolated_ADC
 		void save_calibration(uint8_t ch);
 		void save_all_calibration();
 		void set_led(bool state);
+		float get_cal_offset(uint8_t ch);
+		float get_cal_gain(uint8_t ch);
 
 	private:
 		//************METHODS****************
