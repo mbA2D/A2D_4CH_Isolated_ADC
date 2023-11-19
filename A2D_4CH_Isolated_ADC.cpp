@@ -57,6 +57,7 @@ void A2D_4CH_Isolated_ADC::reset()
 	{
 		_adc[i]->init(_adc_i2c_addrs[i]);
 	}
+	_init_cal_from_eeprom();
 }
 
 float A2D_4CH_Isolated_ADC::measure_raw_voltage(uint8_t ch)
