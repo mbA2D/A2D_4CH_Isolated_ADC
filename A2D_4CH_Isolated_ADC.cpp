@@ -7,7 +7,7 @@
 #include "A2D_4CH_Isolated_ADC.h"
 #include "MCP3425.h"
 
-//constructor and initialization list
+//constructor
 A2D_4CH_Isolated_ADC::A2D_4CH_Isolated_ADC()
 {	
 	_adc_i2c_addrs[0] = A2D_4CH_ISO_ADC_CH1_I2C_ADDR;
@@ -36,6 +36,7 @@ A2D_4CH_Isolated_ADC::A2D_4CH_Isolated_ADC()
 void A2D_4CH_Isolated_ADC::init()
 {
 	pinMode(A2D_4CH_ISO_ADC_LED_PIN, OUTPUT);
+	set_led(false);
 	
 	_init_cal_from_eeprom();
 	
