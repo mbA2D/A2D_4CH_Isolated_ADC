@@ -10,17 +10,17 @@ CHANGELOG:
 
 #include <A2D_4CH_Isolated_ADC.h>
 
-#define MANUFACTURER  ("A2D Electronics")
-#define DESCRIPTION ("4CH Isolated ADC")
-#define VERSION     ("V1.0.0")
-#define SERIAL_NUM  ("00001")
+#define MANUFACTURER ("A2D Electronics")
+#define MODEL		 ("4CH Isolated ADC")
+#define SERIAL_NUM   ("00001")
+#define VERSION      ("V1.0.0")
 
 //SERIAL DEFINES
-#define BAUDRATE    115200
+#define BAUDRATE      115200
 #define SER_BUF_LEN   256
 #define CMD_BUF_LEN   32
-#define END_CHAR    '\n'
-#define NO_CMD      ""
+#define END_CHAR      '\n'
+#define NO_CMD        ""
 
 //Macro for finding commands - F to store string literal
 //in flash instead of memory
@@ -68,11 +68,11 @@ void loop() {
   else if(CMDIS(command, "*IDN?")){
 	Serial.print(MANUFACTURER);
 	Serial.print(",");
-	Serial.print(DESCRIPTION);
+	Serial.print(MODEL);
 	Serial.print(",");
-	Serial.print(VERSION);
+	Serial.print(SERIAL_NUM);
 	Serial.print(",");
-	Serial.println(SERIAL_NUM);
+	Serial.println(VERSION);
 	Serial.flush();
   }
   
@@ -86,9 +86,9 @@ void loop() {
 	; //nothing since we don't have errors yet
   }
   
-  //INSTR:SET:LED VAL
+  //INSTR:LED VAL
   //VAL is boolean 0 or 1
-  else if (CMDIS(command, "INSTR:SET:LED")){
+  else if (CMDIS(command, "INSTR:LED")){
 	char delimeters[] = " ,";
 	token = strtok(NULL, delimeters);
 	adc.set_led(bool(atoi(token)));
@@ -117,9 +117,9 @@ void loop() {
 	Serial.flush();
   }
   
-  //MEAS:VOLT:ATADC CH?
+  //MEAS:VOLT:ADC CH?
   //CH is integer in range of 1-4, or 0. 0 means read all 4 channels
-  else if (CMDIS(command, "MEAS:VOLT:ATADC")){
+  else if (CMDIS(command, "MEAS:VOLT:ADC")){
 	uint8_t ch = parse_channel(token);
 	if(ch == 0)
 	{
@@ -189,7 +189,7 @@ void loop() {
   }
   
   //CAL CH?
-  //CH is integer in range of 1-4, or 0. 0 means reset all 4 channels
+  //CH is integer in range of 1-4, or 0. 0 means return all 4 channels
   else if (CMDIS(command, "CAL")){
 	  uint8_t ch = parse_channel(token);
 	  if(ch == 0)

@@ -57,6 +57,10 @@ void A2D_4CH_Isolated_ADC::reset()
 	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
 	{
 		_adc[i]->init(_adc_i2c_addrs[i]);
+		_adc[i]->reset();
+		_adc[i]->set_gain(MCP3425_GAIN_1);
+		_adc[i]->set_rate(MCP3425_DR_15SPS);
+		_adc[i]->set_mode(MCP3425_MODE_CONTINUOUS);
 	}
 	_init_cal_from_eeprom();
 }
