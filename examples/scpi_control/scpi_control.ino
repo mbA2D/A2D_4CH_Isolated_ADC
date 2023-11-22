@@ -155,7 +155,7 @@ void loop() {
   }
   
   //CAL:SAVE CH?
-  //CH is integer in range of 1-4, or 0. 0 means reset all 4 channels
+  //CH is integer in range of 1-4, or 0. 0 means save all 4 channels
   else if (CMDIS(command, "CAL:SAVE")){
 	  uint8_t ch = parse_channel(token);
 	  if(ch == 0)
@@ -185,7 +185,10 @@ void loop() {
 	}
 	
 	uint8_t ch = parse_channel(token);
-	adc.calibrate_voltage(ch-1, float_arr[0], float_arr[1], float_arr[2], float_arr[3]);
+	if(ch >= 1 && ch <= A2D_4CH_ISO_ADC_NUM_CHANNELS)
+	{
+		adc.calibrate_voltage(ch-1, float_arr[0], float_arr[1], float_arr[2], float_arr[3]);
+	}
   }
   
   //CAL CH?
@@ -221,7 +224,15 @@ uint8_t parse_channel(char* token)
 {
 	char delimeters[] = " ,?";
 	token = strtok(NULL, delimeters);
-	return uint8_t(atoi(token));
+	uint8_t channel = uint8_t(atoi(token));
+	if(channel >= 0 && channel <= A2D_4CH_ISO_ADC_NUM_CHANNELS)
+	{
+		return channel;
+	}
+	else
+	{
+		return A2D_4CH_ISO_ADC_NUM_CHANNELS + 1;
+	}
 }
 
 void parse_serial(char ser_buf[], char command[], char* token)
