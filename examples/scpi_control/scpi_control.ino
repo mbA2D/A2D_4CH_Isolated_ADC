@@ -58,7 +58,7 @@ void scpi_handler_instr_dr();
 void scpi_handler_instr_mode();
 void scpi_handler_instr_rs485_set();
 void scpi_handler_instr_rs485();
-void scpi_handler_rs485_save();
+void scpi_handler_instr_rs485_save();
 
 //Global Variables
 A2D_4CH_Isolated_ADC g_a2d_adc;
@@ -681,7 +681,7 @@ void scpi_handler_instr_rs485()
 	Serial.flush();
 }
 
-void scpi_handler_rs485_save()
+void scpi_handler_instr_rs485_save()
 {
 	g_a2d_adc.save_rs485_addr();
 }
