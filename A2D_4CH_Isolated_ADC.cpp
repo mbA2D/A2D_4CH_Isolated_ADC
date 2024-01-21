@@ -307,6 +307,11 @@ void A2D_4CH_Isolated_ADC::set_rs485_receive(bool state)
 	}
 }
 
+char* A2D_4CH_Isolated_ADC::get_serial_num()
+{
+	return _serial;
+}
+
 void A2D_4CH_Isolated_ADC::force_eeprom_reinit()
 {
 	_init_eeprom();

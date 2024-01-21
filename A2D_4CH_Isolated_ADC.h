@@ -50,6 +50,7 @@ class A2D_4CH_Isolated_ADC
 		float get_cal_offset(uint8_t ch);
 		float get_cal_gain(uint8_t ch);
 		
+		char* get_serial_num();
 		void force_eeprom_reinit();
 
 	private:
