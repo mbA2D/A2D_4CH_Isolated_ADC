@@ -18,7 +18,7 @@ A2D_4CH_Isolated_ADC::A2D_4CH_Isolated_ADC()
 	//EEPROM Addresses
 	_ee_addr_initialized = 0;
 	_ee_addr_serial = _ee_addr_initialized + sizeof(_ee_initialized);
-	_ee_addr_v_scale[0] = _ee_addr_serial + sizeof(_serial);
+	_ee_addr_v_scale[0] = _ee_addr_serial + sizeof(*_serial)*A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN;
 	_ee_addr_v_off[0] = _ee_addr_v_scale[0] + sizeof(_v_scaling[0]);
 	for(uint8_t i = 1; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
 	{
@@ -34,11 +34,9 @@ A2D_4CH_Isolated_ADC::A2D_4CH_Isolated_ADC()
 	}
 	
 	//Serial number
-	#ifdef SERIAL_NUM
-	strcpy(_serial, SERIAL_NUM);
-	#else
+	//#ifdef SERIAL
 	strcpy(_serial, A2D_4CH_ISO_ADC_DEFAULT_SERIAL_NUM);
-	#endif
+	//#endif
 }
 
 void A2D_4CH_Isolated_ADC::init(TwoWire *i2c)
@@ -128,7 +126,6 @@ void A2D_4CH_Isolated_ADC::save_all_calibration()
 	{
 		save_calibration(i);
 	}
-	EEPROM.put(_ee_addr_initialized, A2D_4CH_ISO_ADC_EEPROM_INIT_VAL);
 }
 
 float A2D_4CH_Isolated_ADC::get_cal_offset(uint8_t ch)
@@ -155,12 +152,23 @@ void A2D_4CH_Isolated_ADC::_init_eeprom()
 	set_rs485_addr(A2D_4CH_ISO_ADC_DEFAULT_RS485_ADDR);
 	save_rs485_addr();
 	
-	//Serial Number
-	EEPROM.put(_ee_addr_serial, _serial);
+	//Serial Number - only put if SERIAL is defined
+	//#ifdef SERIAL
+	//for(int i = 0; i < (A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN-1); i++)
+	//{
+	//	EEPROM.put(_ee_addr_serial + i*sizeof(*_serial), _serial[i]);
+	//	Serial.print("put: ");
+	//	Serial.print(_serial[i], HEX);
+	//	Serial.print(" at ");
+	//	Serial.println(_ee_addr_serial + i*sizeof(*_serial));
+	//}
+	//#endif
 	
 	//Calibration Values
 	reset_all_calibration();
 	save_all_calibration();
+
+	EEPROM.put(_ee_addr_initialized, A2D_4CH_ISO_ADC_EEPROM_INIT_VAL);
 }
 
 void A2D_4CH_Isolated_ADC::_init_from_eeprom()
@@ -175,7 +183,31 @@ void A2D_4CH_Isolated_ADC::_init_from_eeprom()
 	}
 	
 	//now load the values from EEPROM to the class variables
-	EEPROM.get(_ee_addr_serial, _serial);
+	/*
+	bool _serial_defined = false; //there seems to be a bug with #ifdef in Arduino IDE
+	#ifdef SERIAL
+	_serial_defined = true;
+	#endif
+	//#ifndef SERIAL //only load if SERIAL is not defined
+	Serial.print("_serial_defined: ");
+	Serial.println(_serial_defined);
+	if(!_serial_defined)
+	{
+		Serial.println("Loading serial number");
+		for(uint8_t i = 0; i < (A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN-1); i++)
+		{
+			EEPROM.get(_ee_addr_serial + i*sizeof(*_serial), _serial[i]); //serial number
+			Serial.print("got: ");
+			Serial.print(_serial[i], HEX);
+			Serial.print(" from ");
+			Serial.println(_ee_addr_serial + i*sizeof(*_serial));
+		}
+		_serial[A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN-1] = '\0';
+	}
+	//#endif
+	*/
+
+
 	EEPROM.get(_ee_addr_rs485_addr, _rs485_addr); //RS485 Address
 	
 	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)

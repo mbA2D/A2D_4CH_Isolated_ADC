@@ -19,9 +19,7 @@ class A2D_4CH_Isolated_ADC
 	public:
 		A2D_4CH_Isolated_ADC(); //constructor
 		
-		//scaling for voltages
-		float _v_scaling[A2D_4CH_ISO_ADC_NUM_CHANNELS]; // V/V
-		float _v_offset[A2D_4CH_ISO_ADC_NUM_CHANNELS]; //V
+		
 		
 		//Configuration
 		void init(TwoWire *i2c = &Wire);
@@ -30,26 +28,29 @@ class A2D_4CH_Isolated_ADC
 		//Interface
 		float measure_voltage(uint8_t ch);
 		float measure_raw_voltage(uint8_t ch);
+
+		//Calibration
 		void calibrate_voltage(uint8_t ch, float p1_meas, float p1_act, float p2_meas, float p2_act);
 		void reset_calibration(uint8_t ch);
 		void reset_all_calibration();
 		void save_calibration(uint8_t ch);
 		void save_all_calibration();
-		void set_led(bool state);
-		void set_rs485_receive(bool state);
-		
+		float get_cal_offset(uint8_t ch);
+		float get_cal_gain(uint8_t ch);
+
+		//ADC Configuration
 		void set_gain(uint8_t ch, uint8_t gain);
 		void set_data_rate(uint8_t ch, uint8_t data_rate);
 		void set_mode(uint8_t ch, uint8_t mode);
 		void trigger_all_single_shot(); //triggers all 4 channels simultaneously
 		
+		//RS485
+		void set_rs485_receive(bool state);
 		void set_rs485_addr(uint8_t rs485_addr);
 		void save_rs485_addr();
 		uint8_t get_rs485_addr();
 		
-		float get_cal_offset(uint8_t ch);
-		float get_cal_gain(uint8_t ch);
-		
+		void set_led(bool state);
 		char* get_serial_num();
 		void force_eeprom_reinit();
 
@@ -65,6 +66,11 @@ class A2D_4CH_Isolated_ADC
 		
 		
 		//*********VARIABLES/CLASSES*********
+
+		//scaling for voltages
+		float _v_scaling[A2D_4CH_ISO_ADC_NUM_CHANNELS]; // V/V
+		float _v_offset[A2D_4CH_ISO_ADC_NUM_CHANNELS]; //V
+
 		uint8_t _ee_initialized;
 		char _serial[A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN];
 		uint8_t _rs485_addr;

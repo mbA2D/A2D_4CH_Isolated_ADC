@@ -7,20 +7,19 @@ PURPOSE: This example implements some SCPI commands
 CHANGELOG:
 	Jan 14, 2024: V1.0.1: Added RS485 communication with MEAS:VOLT command
 	Jan 21, 2024: Updated SCPI parsing and modified all commands with <CH> parameter to work with RS485 connection
+	Feb 10, 2024: V1.0.2: Updating SCPI parsing to use a function for each command
 */
 
 #include <A2D_4CH_Isolated_ADC.h>
 
-// #define DEBUG //uncomment this line to add all debug printing statements
-// #define FORCE_EEPROM_REINIT //uncomment this line to force reinitialization of EEPROM (serial number, calibration, RS485 Address, etc.)
+#define SERIAL F("0002") //There seems to be a bug with Arduino IDE #ifdef, #ifndef, etc. need to hard-code the serial number
 
-#define MANUFACTURER ("A2D Electronics")
-#define MODEL ("4CH Isolated ADC")
-#define VERSION ("V1.0.1")
+//#define DEBUG //uncomment this line to add all debug printing statements
+//#define FORCE_EEPROM_REINIT //uncomment this line to force reinitialization of EEPROM (serial number, calibration, RS485 Address, etc.)
 
 // SERIAL DEFINES
 #define BAUDRATE 115200
-#define SER_BUF_LEN 256
+#define SER_BUF_LEN 200
 #define CMD_BUF_LEN 32
 #define END_CHAR '\n'
 #define NO_CMD ""
@@ -38,7 +37,7 @@ uint8_t parse_channel();
 bool parse_bool();
 float parse_float();
 bool channel_on_this_device(uint8_t channel);
-void parse_command(char ser_buf[], char command[], char *token, bool *is_query, bool from_rs485, uint8_t *rs485_addr);
+void parse_command(char ser_buf[], char command[], bool from_rs485);
 void pass_cmd_to_rs485(uint8_t rs485_addr);
 void wait_rs485_response_send_usb(char ser_buf[]);
 
@@ -66,7 +65,7 @@ HardwareSerial Serial3(PB11, PB10); // RX, TX - for RS485
 uint8_t g_a2d_cmd_source;
 bool g_a2d_is_query;
 char ser_buf[SER_BUF_LEN];
-uint8_t rs485_address;
+uint8_t g_a2d_rs485_address;
 
 void setup()
 {
@@ -113,7 +112,7 @@ void loop()
 		// Read until a full command is received
 		chars_input = Serial.readBytesUntil(END_CHAR, ser_buf, SER_BUF_LEN);
 		ser_buf[chars_input] = '\0'; // terminate the input string with NULL to work with strtok
-		parse_command(ser_buf, command, &g_a2d_is_query, false, &rs485_address);
+		parse_command(ser_buf, command, false);
 
 		g_a2d_cmd_source = A2D_4CH_ISO_ADC_CMD_SOURCE_USB;
 
@@ -145,15 +144,15 @@ void loop()
 		// Command response to base: rs485_addr is 0
 
 		// if addr is 0 and this is the base device, then send the rest of the response out over USB.
-		parse_command(ser_buf, command, &g_a2d_is_query, true, &rs485_address);
+		parse_command(ser_buf, command, true);
 
 #ifdef DEBUG
 		Serial.print(F("RS485 Address read: "));
-		Serial.println(rs485_address);
+		Serial.println(g_a2d_rs485_address);
 #endif
 
 		// if address is for this device
-		if (rs485_address == g_a2d_adc.get_rs485_addr())
+		if (g_a2d_rs485_address == g_a2d_adc.get_rs485_addr())
 		{
 
 // we need to process the command, but we send the response over RS485 instead of USB.
@@ -309,7 +308,8 @@ void scpi_handler_idn()
 	Serial.print(",");
 	Serial.print(MODEL);
 	Serial.print(",");
-	Serial.print(g_a2d_adc.get_serial_num());
+	//Serial.print(g_a2d_adc.get_serial_num());
+	Serial.print(SERIAL);
 	Serial.print(",");
 	Serial.println(VERSION);
 	Serial.flush();
@@ -765,7 +765,7 @@ bool channel_on_this_device(uint8_t channel)
 	return false;
 }
 
-void parse_command(char ser_buf[], char command[], bool *is_query, bool from_rs485, uint8_t *rs485_addr)
+void parse_command(char ser_buf[], char command[], bool from_rs485)
 {
 	// parses commands from the USB port (base device)
 
@@ -783,11 +783,11 @@ void parse_command(char ser_buf[], char command[], bool *is_query, bool from_rs4
 
 	if (strchr(ser_buf, '?') != NULL)
 	{
-		*is_query = true;
+		g_a2d_is_query = true;
 	}
 	else
 	{
-		*is_query = false;
+		g_a2d_is_query = false;
 	}
 
 	if (from_rs485)
@@ -811,7 +811,7 @@ void parse_command(char ser_buf[], char command[], bool *is_query, bool from_rs4
 		//          to
 		//          (X+1) * A2D_4CH_ISO_ADC_NUM_CHANNELS + A2D_4CH_ISO_ADC_NUM_CHANNELS
 		token = strtok(ser_buf, delimeters_address_command);
-		uint8_t rs485_address = uint8_t(atoi(token));
+		g_a2d_rs485_address = uint8_t(atoi(token));
 		token = strtok(NULL, delimeters_address_command);
 		strcpy(command, token);
 	}

@@ -29,3 +29,7 @@
 #define A2D_4CH_ISO_ADC_EEPROM_INIT_VAL		0x55 //0b01010101
 #define A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN		5 //4 characters in the serial number, +1 for the null string
 #define A2D_4CH_ISO_ADC_DEFAULT_SERIAL_NUM	"0000"
+
+#define MANUFACTURER ("A2D Electronics")
+#define MODEL ("4CH Isolated ADC")
+#define VERSION ("V1.0.2")
