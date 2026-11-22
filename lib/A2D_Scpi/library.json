@@ -1,0 +1,7 @@
+{
+  "name": "A2D_Scpi",
+  "version": "1.0.0",
+  "description": "Small, fixed-buffer command parser and line reader for SCPI-like instruments",
+  "license": "GPL-3.0-only",
+  "build": { "srcDir": "src" }
+}

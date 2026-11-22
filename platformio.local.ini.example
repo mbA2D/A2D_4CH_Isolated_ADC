@@ -1,0 +1,7 @@
+; Copy to platformio.local.ini and set the intended unit and port.
+[env:usb_unit]
+extends = env:usb
+custom_device_serial = 0003
+upload_port = COM10
+; USB chip identity observed while this particular unit is running.
+custom_usb_serial = 4977386D3659

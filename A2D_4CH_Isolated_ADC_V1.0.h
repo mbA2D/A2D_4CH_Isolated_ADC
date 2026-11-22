@@ -1,6 +1,6 @@
 //Board Description File for A2D_Sense_Board_V1.0 Board
 
-#include "MCP3425.h"
+#include "A2D_MCP3425.h"
 #include "Arduino.h"
 
 //Valid I2C Address
@@ -32,4 +32,4 @@
 
 #define MANUFACTURER ("A2D Electronics")
 #define MODEL ("4CH Isolated ADC")
-#define VERSION ("V1.0.2")
+#define VERSION ("V2.1.3")

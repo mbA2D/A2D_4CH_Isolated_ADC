@@ -1,351 +1,50 @@
-/* A2D Electronics A2D_4CH_Isolated_ADC Board Library
- * Written By: Micah Black
- * Date: Nov 15, 2023
- *
- */
-
 #include "A2D_4CH_Isolated_ADC.h"
-#include "MCP3425.h"
-
-//constructor
-A2D_4CH_Isolated_ADC::A2D_4CH_Isolated_ADC()
-{	
-	_adc_i2c_addrs[0] = A2D_4CH_ISO_ADC_CH1_I2C_ADDR;
-	_adc_i2c_addrs[1] = A2D_4CH_ISO_ADC_CH2_I2C_ADDR;
-	_adc_i2c_addrs[2] = A2D_4CH_ISO_ADC_CH3_I2C_ADDR;
-	_adc_i2c_addrs[3] = A2D_4CH_ISO_ADC_CH4_I2C_ADDR;
-	
-	//EEPROM Addresses
-	_ee_addr_initialized = 0;
-	_ee_addr_serial = _ee_addr_initialized + sizeof(_ee_initialized);
-	_ee_addr_v_scale[0] = _ee_addr_serial + sizeof(*_serial)*A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN;
-	_ee_addr_v_off[0] = _ee_addr_v_scale[0] + sizeof(_v_scaling[0]);
-	for(uint8_t i = 1; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
-	{
-		_ee_addr_v_scale[i] = _ee_addr_v_off[i-1] + sizeof(_v_offset[i-1]);
-		_ee_addr_v_off[i] = _ee_addr_v_scale[i] + sizeof(_v_scaling[i]);
-	}
-	_ee_addr_rs485_addr = _ee_addr_v_off[A2D_4CH_ISO_ADC_NUM_CHANNELS-1] + sizeof(_v_offset[A2D_4CH_ISO_ADC_NUM_CHANNELS-1]);
-	
-	//ADC 
-	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
-	{
-		_adc[i] = new MCP3425();
-	}
-	
-	//Serial number
-	//#ifdef SERIAL
-	strcpy(_serial, A2D_4CH_ISO_ADC_DEFAULT_SERIAL_NUM);
-	//#endif
+#include <string.h>
+A2D_4CH_Isolated_ADC::A2D_4CH_Isolated_ADC() : address_(0) {
+    strcpy(serial_, A2D_4CH_ISO_ADC_DEFAULT_SERIAL_NUM);
 }
-
-void A2D_4CH_Isolated_ADC::init(TwoWire *i2c)
-{
-	pinMode(A2D_4CH_ISO_ADC_LED_PIN, OUTPUT);
-	pinMode(A2D_4CH_ISO_ADC_RS485_DE_PIN, OUTPUT);
-	_i2c = i2c;
-	reset();
+bool A2D_4CH_Isolated_ADC::init(TwoWire *i2c) {
+    pinMode(A2D_4CH_ISO_ADC_LED_PIN, OUTPUT);
+    pinMode(A2D_4CH_ISO_ADC_RS485_DE_PIN, OUTPUT);
+    set_led(false);
+    set_rs485_receive(true);
+    const bool adcOk = measurement_.begin(i2c);
+    const bool storageOk = storage_.load(calibration_, address_);
+    return adcOk && storageOk;
 }
-
-void A2D_4CH_Isolated_ADC::reset()
-{
-	set_led(false);
-	set_rs485_receive(true);
-	
-	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
-	{
-		_adc[i]->init(_adc_i2c_addrs[i]);
-		_adc[i]->reset();
-		_adc[i]->set_gain(MCP3425_GAIN_1);
-		_adc[i]->set_rate(MCP3425_DR_15SPS);
-		_adc[i]->set_mode(MCP3425_MODE_CONTINUOUS);
-	}
-	_init_from_eeprom();
-	
+bool A2D_4CH_Isolated_ADC::reset() {
+    set_led(false);
+    set_rs485_receive(true);
+    const bool adcOk = measurement_.reset();
+    const bool storageOk = storage_.load(calibration_, address_);
+    return adcOk && storageOk;
 }
-
-float A2D_4CH_Isolated_ADC::measure_raw_voltage(uint8_t ch)
-{
-	if(_validate_ch(ch))
-	{
-		return _adc[ch]->measure_voltage_continuous();
-	}
-	return 0.0;
+float A2D_4CH_Isolated_ADC::measure_raw_voltage(uint8_t ch) { return measurement_.readRaw(ch); }
+float A2D_4CH_Isolated_ADC::measure_voltage(uint8_t ch) { return calibration_.apply(ch, measurement_.readRaw(ch)); }
+bool A2D_4CH_Isolated_ADC::try_calibrate_voltage(uint8_t ch, float a1, float m1, float a2, float m2) {
+    return calibration_.calibrate(ch, a1, m1, a2, m2);
 }
-
-float A2D_4CH_Isolated_ADC::measure_voltage(uint8_t ch)
-{
-	if(_validate_ch(ch))
-	{
-		float voltage = _adc[ch]->measure_voltage_continuous();
-		return _convert_adc_voltage_to_voltage(ch, voltage);
-	}
-	return 0.0;
+void A2D_4CH_Isolated_ADC::calibrate_voltage(uint8_t ch, float a1, float m1, float a2, float m2) {
+    try_calibrate_voltage(ch, a1, m1, a2, m2);
 }
-
-void A2D_4CH_Isolated_ADC::calibrate_voltage(uint8_t ch, float p1_meas, float p1_act, float p2_meas, float p2_act)
-{
-	//calculate new offset (b) and scaling (m) in:  actual = m * measured + b
-	if(_validate_ch(ch))
-	{
-		_v_scaling[ch] = (p2_meas - p1_meas) / (p2_act - p1_act); //rise in actual / run in measured
-		_v_offset[ch] = p2_act - (1/_v_scaling[ch]) * p2_meas; //b = actual - m * measured
-	}
+void A2D_4CH_Isolated_ADC::reset_calibration(uint8_t ch) { calibration_.reset(ch); }
+void A2D_4CH_Isolated_ADC::reset_all_calibration() { calibration_.resetAll(); }
+bool A2D_4CH_Isolated_ADC::save_calibration(uint8_t ch) { return storage_.saveCalibration(calibration_, ch); }
+bool A2D_4CH_Isolated_ADC::save_all_calibration() { return storage_.saveAllCalibration(calibration_); }
+float A2D_4CH_Isolated_ADC::get_cal_offset(uint8_t ch) { return calibration_.get(ch).offset; }
+float A2D_4CH_Isolated_ADC::get_cal_gain(uint8_t ch) { return calibration_.get(ch).gain; }
+bool A2D_4CH_Isolated_ADC::set_gain(uint8_t ch, uint8_t gain) { return measurement_.setGain(ch, gain); }
+bool A2D_4CH_Isolated_ADC::set_data_rate(uint8_t ch, uint8_t rate) { return measurement_.setRate(ch, rate); }
+bool A2D_4CH_Isolated_ADC::set_mode(uint8_t ch, uint8_t mode) { return measurement_.setMode(ch, mode); }
+bool A2D_4CH_Isolated_ADC::trigger_all_single_shot() { return measurement_.trigger(); }
+void A2D_4CH_Isolated_ADC::set_rs485_receive(bool state) { digitalWrite(A2D_4CH_ISO_ADC_RS485_DE_PIN, !state); }
+void A2D_4CH_Isolated_ADC::set_rs485_addr(uint8_t address) { address_ = address; }
+bool A2D_4CH_Isolated_ADC::save_rs485_addr() { return storage_.saveAddress(address_); }
+uint8_t A2D_4CH_Isolated_ADC::get_rs485_addr() { return address_; }
+void A2D_4CH_Isolated_ADC::set_led(bool state) {
+    digitalWrite(A2D_4CH_ISO_ADC_LED_PIN, state ? A2D_4CH_ISO_ADC_LED_ON : A2D_4CH_ISO_ADC_LED_OFF);
 }
+char *A2D_4CH_Isolated_ADC::get_serial_num() { return serial_; }
+bool A2D_4CH_Isolated_ADC::force_eeprom_reinit() { return storage_.initialize(calibration_, address_) && reset(); }
 
-void A2D_4CH_Isolated_ADC::reset_calibration(uint8_t ch)
-{
-	//resets to the default calibration - assumes all components have 0% tolerance.
-	if(_validate_ch(ch))
-	{
-		_v_scaling[ch] = A2D_4CH_ISO_ADC_DEFAULT_V_SCALING;
-		_v_offset[ch] = A2D_4CH_ISO_ADC_DEFAULT_V_OFFSET;
-	}
-}
-
-void A2D_4CH_Isolated_ADC::reset_all_calibration()
-{
-	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
-	{
-		reset_calibration(i);
-	}
-}
-
-void A2D_4CH_Isolated_ADC::save_calibration(uint8_t ch)
-{
-	if(_validate_ch(ch))
-	{
-		EEPROM.put(_ee_addr_v_off[ch], _v_offset[ch]);
-		EEPROM.put(_ee_addr_v_scale[ch], _v_scaling[ch]);
-	}
-}
-
-void A2D_4CH_Isolated_ADC::save_all_calibration()
-{
-	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
-	{
-		save_calibration(i);
-	}
-}
-
-float A2D_4CH_Isolated_ADC::get_cal_offset(uint8_t ch)
-{
-	if(_validate_ch(ch))
-	{
-		return _v_offset[ch];
-	}
-	return 0.0;
-}
-
-float A2D_4CH_Isolated_ADC::get_cal_gain(uint8_t ch)
-{
-	if(_validate_ch(ch))
-	{
-		return _v_scaling[ch];
-	}
-	return 0.0;
-}
-
-void A2D_4CH_Isolated_ADC::_init_eeprom()
-{
-	//RS485 Address
-	set_rs485_addr(A2D_4CH_ISO_ADC_DEFAULT_RS485_ADDR);
-	save_rs485_addr();
-	
-	//Serial Number - only put if SERIAL is defined
-	//#ifdef SERIAL
-	//for(int i = 0; i < (A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN-1); i++)
-	//{
-	//	EEPROM.put(_ee_addr_serial + i*sizeof(*_serial), _serial[i]);
-	//	Serial.print("put: ");
-	//	Serial.print(_serial[i], HEX);
-	//	Serial.print(" at ");
-	//	Serial.println(_ee_addr_serial + i*sizeof(*_serial));
-	//}
-	//#endif
-	
-	//Calibration Values
-	reset_all_calibration();
-	save_all_calibration();
-
-	EEPROM.put(_ee_addr_initialized, A2D_4CH_ISO_ADC_EEPROM_INIT_VAL);
-}
-
-void A2D_4CH_Isolated_ADC::_init_from_eeprom()
-{
-	//check the _ee_initialized byte
-	EEPROM.get(_ee_addr_initialized, _ee_initialized);
-	
-	//if it is not correct, then load the default values in EEPROM
-	if(_ee_initialized != A2D_4CH_ISO_ADC_EEPROM_INIT_VAL)
-	{
-		_init_eeprom();
-	}
-	
-	//now load the values from EEPROM to the class variables
-	/*
-	bool _serial_defined = false; //there seems to be a bug with #ifdef in Arduino IDE
-	#ifdef SERIAL
-	_serial_defined = true;
-	#endif
-	//#ifndef SERIAL //only load if SERIAL is not defined
-	Serial.print("_serial_defined: ");
-	Serial.println(_serial_defined);
-	if(!_serial_defined)
-	{
-		Serial.println("Loading serial number");
-		for(uint8_t i = 0; i < (A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN-1); i++)
-		{
-			EEPROM.get(_ee_addr_serial + i*sizeof(*_serial), _serial[i]); //serial number
-			Serial.print("got: ");
-			Serial.print(_serial[i], HEX);
-			Serial.print(" from ");
-			Serial.println(_ee_addr_serial + i*sizeof(*_serial));
-		}
-		_serial[A2D_4CH_ISO_ADC_SERIAL_CHAR_LEN-1] = '\0';
-	}
-	//#endif
-	*/
-
-
-	EEPROM.get(_ee_addr_rs485_addr, _rs485_addr); //RS485 Address
-	
-	for(uint8_t i = 0; i < A2D_4CH_ISO_ADC_NUM_CHANNELS; i++)
-	{
-		EEPROM.get(_ee_addr_v_off[i], _v_offset[i]);
-		EEPROM.get(_ee_addr_v_scale[i], _v_scaling[i]);
-	}
-}
-
-void A2D_4CH_Isolated_ADC::set_rs485_addr(uint8_t rs485_addr)
-{
-	_rs485_addr = rs485_addr;
-}
-
-void A2D_4CH_Isolated_ADC::save_rs485_addr()
-{
-	EEPROM.put(_ee_addr_rs485_addr, _rs485_addr);
-}
-
-uint8_t A2D_4CH_Isolated_ADC::get_rs485_addr()
-{
-	return _rs485_addr;
-}
-
-void A2D_4CH_Isolated_ADC::set_led(bool state)
-{
-	if(state)
-	{
-		digitalWrite(A2D_4CH_ISO_ADC_LED_PIN, A2D_4CH_ISO_ADC_LED_ON);
-	}
-	else
-	{
-		digitalWrite(A2D_4CH_ISO_ADC_LED_PIN, A2D_4CH_ISO_ADC_LED_OFF);
-	}
-	
-}
-
-void A2D_4CH_Isolated_ADC::set_gain(uint8_t ch, uint8_t gain)
-{
-	if(_validate_ch(ch))
-	{
-		if(_validate_gain(gain))
-		{
-			_adc[ch]->set_gain(gain);
-		}
-	}
-}
-
-void A2D_4CH_Isolated_ADC::set_data_rate(uint8_t ch, uint8_t data_rate)
-{
-	if(_validate_ch(ch))
-	{
-		if(_validate_data_rate(data_rate))
-		{
-			_adc[ch]->set_rate(data_rate);
-		}
-	}
-}
-
-void A2D_4CH_Isolated_ADC::set_mode(uint8_t ch, uint8_t mode)
-{
-	if(_validate_ch(ch))
-	{
-		if(_validate_mode(mode))
-		{
-			_adc[ch]->set_mode(mode);
-		}
-	}
-}
-
-float A2D_4CH_Isolated_ADC::_convert_adc_voltage_to_voltage(uint8_t ch, float voltage)
-{
-	if(_validate_ch(ch))
-	{
-		return (voltage - _v_offset[ch]) * _v_scaling[ch];
-	}
-	return 0;
-}
-
-void A2D_4CH_Isolated_ADC::trigger_all_single_shot()
-{
-	//changes the device mode to single shot and initiates a conversion for all devices on the bus
-	_i2c->beginTransmission(I2C_GENERAL_CALL_MCP3425_ADDRESS);
-	_i2c->write(I2C_GENERAL_CALL_MCP3425_CONV);
-	_i2c->endTransmission(true);
-}
-
-bool A2D_4CH_Isolated_ADC::_validate_ch(uint8_t ch)
-{
-	return ((ch < A2D_4CH_ISO_ADC_NUM_CHANNELS) && (ch >= 0));
-}
-
-bool A2D_4CH_Isolated_ADC::_validate_gain(uint8_t gain)
-{
-	if(gain==MCP3425_GAIN_1 || gain==MCP3425_GAIN_2 || gain==MCP3425_GAIN_4 || gain==MCP3425_GAIN_8)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool A2D_4CH_Isolated_ADC::_validate_data_rate(uint8_t data_rate)
-{
-	if(data_rate==MCP3425_DR_15SPS || data_rate==MCP3425_DR_60SPS || data_rate==MCP3425_DR_240SPS)
-	{	
-		return true;
-	}
-	return false;
-}
-
-bool A2D_4CH_Isolated_ADC::_validate_mode(uint8_t mode)
-{
-	if(mode==MCP3425_MODE_CONTINUOUS || mode == MCP3425_MODE_SINGLE_SHOT)
-	{
-		return true;
-	}
-	return false;
-}
-
-void A2D_4CH_Isolated_ADC::set_rs485_receive(bool state)
-{
-	if(state)
-	{
-		digitalWrite(A2D_4CH_ISO_ADC_RS485_DE_PIN, false);
-	}
-	else
-	{
-		digitalWrite(A2D_4CH_ISO_ADC_RS485_DE_PIN, true);
-	}
-}
-
-char* A2D_4CH_Isolated_ADC::get_serial_num()
-{
-	return _serial;
-}
-
-void A2D_4CH_Isolated_ADC::force_eeprom_reinit()
-{
-	_init_eeprom();
-	reset();
-}
+bool A2D_4CH_Isolated_ADC::reserve_request_ids(uint32_t &first, uint32_t &last) { return storage_.reserveRequestIds(first, last); }

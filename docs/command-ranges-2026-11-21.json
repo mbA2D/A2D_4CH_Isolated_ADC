@@ -1,0 +1,176 @@
+{
+  "status": "complete",
+  "firmware_version": "V2.1.2",
+  "time_utc": "2026-11-22T04:17:50.696056+00:00",
+  "unit": "0003",
+  "usb_serial": "4977386D3659",
+  "port": "COM10",
+  "hub": "1-10.4.1.1.1.4",
+  "unit0001_touched": false,
+  "calibration_limits": {
+    "actual_reference_volts": [
+      0,
+      5
+    ],
+    "measured_raw_adc_volts": [
+      -2.048,
+      2.048
+    ],
+    "minimum_raw_span_volts": 0.001,
+    "scale_nominal": 2.8181817531585693,
+    "gain_tolerance_percent": 10,
+    "scale_float32_bounds": [
+      2.5363636016845703,
+      3.0999999046325684
+    ],
+    "offset_raw_adc_volts": [
+      -0.25,
+      0.25
+    ]
+  },
+  "behavior": [
+    "Reject invalid calibration before mutation or remote forwarding",
+    "Retain the previous calibration after rejection, including the next save",
+    "Validate loaded and saved coefficients with the same limits",
+    "Repair old out-of-range finite calibration per channel, preserving address and request-ID high-water mark",
+    "No additional bounds needed for other commands; existing bounds verified",
+    "Reusable SCPI library unchanged; deferred interface proposals remain deferred"
+  ],
+  "verification": {
+    "host_groups_or_checks": 65,
+    "host_suites": {
+      "portable_scpi": 10,
+      "copied_package": 1,
+      "application": 25,
+      "usb_reset": 5,
+      "services": 12,
+      "python": 12
+    },
+    "host_adversarial": {
+      "passed": true,
+      "seed": 10670609,
+      "parser_cases": 250000,
+      "invalid_usb_dispatches": 78394,
+      "malformed_foreign_rs485_frames": 100000
+    },
+    "hardware_command_range_checks": 164,
+    "targeted_regressions": 5,
+    "hardware_malformed_frames": 20000,
+    "rejected_numeric_calibrations": 5000,
+    "soak_seconds": 600.125,
+    "soak_counts": {
+      "tx_bytes": 31225814,
+      "replies": 27125,
+      "canary_checks": 1899,
+      "measurement_vectors": 22830,
+      "state_cycles": 11415,
+      "discarded_64k_frames": 457,
+      "backpressure_rounds": 12,
+      "unread_identity_requests": 60000
+    },
+    "successful_hub_uploads": 3,
+    "repeat_upload_checks": 15,
+    "persistence_checks": 23,
+    "final_smoke_checks": 34,
+    "final_measurement_checks": 10,
+    "old_saved_calibration_repair": {
+      "cal1": "0.00000,2.81818",
+      "cal2": "0.00000,2.75000",
+      "address": "7",
+      "forwarding_after_repair": "ERROR:RS485 TIMEOUT",
+      "passed": true,
+      "nominal_restored": true
+    },
+    "settings_interruption": "29 flash-operation cut points modeled in host tests",
+    "usb_build": "passed",
+    "stlink_build": "passed, build only"
+  },
+  "measurements": {
+    "input_condition": "all four inputs unconnected, confirmed by user",
+    "channels": [
+      {
+        "channel": 1,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 2,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 3,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 4,
+        "count": 60,
+        "mean_volts": 0.0004383333333333333,
+        "min_volts": 0.0004,
+        "max_volts": 0.0005,
+        "stddev_volts": 4.86198404860494e-05,
+        "mean_raw_volts": 0.00013833333333333335
+      }
+    ]
+  },
+  "final_snapshot": {
+    "time_utc": "2026-11-22T04:14:58.166236+00:00",
+    "port": "COM10",
+    "usb_serial": "4977386D3659",
+    "usb_location": "1-10.4.1.1.1.4",
+    "identity": "A2D Electronics,4CH Isolated ADC,0003,V2.1.2",
+    "queries": {
+      "INSTR:RS485?": "0",
+      "CAL 0?": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+      "MEAS:VOLT 0?": "0.0000,0.0000,0.0000,0.0004",
+      "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0002"
+    }
+  },
+  "implementation": {
+    "binary_bytes": 54032,
+    "application_limit_bytes": 55296,
+    "free_application_bytes": 1264,
+    "static_ram_bytes": 6380,
+    "ram_limit_bytes": 20480,
+    "library_version": "1.0.0",
+    "settings_layout_changed": false,
+    "binary_sha256": "1e532120b4e855cf2f1af0ab3e5e6bf52c57e9eb47dc22278a73ea64de601176"
+  },
+  "limitations": [
+    "Inputs unconnected; no known-reference accuracy qualification",
+    "No physical RS485 peer, physical flash power-cut or I2C-fault fixture; corresponding fault cases modeled on host",
+    "This run qualified old-policy V2.1.2-to-final V2.1.2 repair and repeat updates; V1-to-V2 migration was not repeated",
+    "The included binary carries serial0003; build with the intended identity for other units",
+    "Ten-minute soak and these probes do not prove absence of all possible faults"
+  ],
+  "evidence_directory": "../Validation/2026-11-21_Command_Ranges/final",
+  "evidence_files": [
+    "command-ranges.json",
+    "numeric-fuzz.json",
+    "targeted.json",
+    "hardware-fuzz.json",
+    "host-adversarial.json",
+    "soak.json",
+    "stored-range-repair.json",
+    "persistence.json",
+    "update-cycles.json",
+    "hardware-smoke-final.json",
+    "measurements-final.json",
+    "after.json"
+  ],
+  "committed": false,
+  "published": false
+}

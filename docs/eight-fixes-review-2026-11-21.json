@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-21",
+  "version": "V2.0.1",
+  "scope": "Eight reported fixes only. Separate command/interface improvements deferred.",
+  "source_disposition": "All eight resolved by initial independent review; reboot/corruption allocator gaps fixed and re-reviewed.",
+  "hardware_disposition": "Complete on unit0003 through original hub: repeat upload and post-repeat34 checks,280 USB burst/coalescing checks,5000 unread-request recovery, settings persistence, measurement sweep.",
+  "original_review_path": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-21_Eight_Fixes\\subagent-review-initial.json",
+  "usb_review": {
+    "reviewer": {
+      "agent_id": "01a200da-5fba-7a52-87ff-b90f92bb2727",
+      "nickname": "Socrates"
+    },
+    "result": "**No remaining concrete USB defect found for the pinned STM32F103 single-buffer build.** The NAK patch, conditional guard, SHA pin, and environment-local middleware remain correct. All five focused tests previously passed; the final Python log records 12 passing tests.\n\nThe saved hardware evidence supports closing the USB OUT stall as **resolved on unit0003 through the original hub**:\n\n- [Packet/burst qualification](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Validation/2026-11-21_Eight_Fixes/usb-bursts-final.json>): 280 checks, including inputs through 8192 bytes.\n- [Backpressure recovery](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Validation/2026-11-21_Eight_Fixes/usb-backpressure-final.json>): 5000 unread requests followed by successful recovery.\n- Persistence and measurement records confirm restored settings, 60 samples/channel, and all 12 gain/rate combinations.\n\nThe repeat-upload log now records successful identity/settings verification, and [post-repeat smoke](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Validation/2026-11-21_Eight_Fixes/hardware-smoke-after-repeat.json>) passes all 34 checks, including the 4096-byte burst.\n\nOne documentation cleanup remains: [hardware_disposition](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/docs/eight-fixes-review-2026-11-21.json:24>) still describes the earlier unresolved stall. Update that current disposition and mark the old pending-work record superseded.\n\nInstalled framework SHA remains unchanged. No edits, builds, or hardware access performed."
+  },
+  "findings_addressed": [
+    {
+      "finding": "Request IDs reused after reboot",
+      "resolution": "Reserve ranges durably before sending."
+    },
+    {
+      "finding": "CRC fallback rolled ID ranges backward",
+      "resolution": "Mirror high-water mark into both valid copies before issuing IDs; interruption/corruption/exhaustion tests."
+    },
+    {
+      "finding": "Core zero-length pause arms32-byte VALID buffer on F103",
+      "resolution": "Pinned project-local source patch keeps endpoint NAK while queue full; full-packet resume remains unchanged. Installed framework remains unmodified."
+    }
+  ],
+  "excluded_device": "0001 untouched",
+  "limits": [
+    "Inputs are unconnected and calibration is nominal; reference recalibration needed for accuracy.",
+    "Physical RS485 peer/corrupted-bus tests and physical power-cut tests were not performed; correlation/failure/torn-write cases use host fault injection."
+  ],
+  "qualification": {
+    "host_groups": 50,
+    "hardware_smoke": 34,
+    "persistence_and_query": 23,
+    "measurement_checks": 10,
+    "samples_per_channel": 60,
+    "gain_rate_combinations": 12,
+    "usb_packet_checks": 280,
+    "unread_identity_requests": 5000,
+    "result": "pass",
+    "firmware": "V2.0.1"
+  },
+  "root_cause": {
+    "source": "pinned STM32 core CDC ClearBuffer arms zero-length OUT as VALID; actual F1 macro allocates32bytes, causingSTALLon64-bytepacket",
+    "fix": "project-local SHA-guarded middleware copy leaves NAK until full-packet space exists",
+    "installed_framework_modified": false
+  }
+}

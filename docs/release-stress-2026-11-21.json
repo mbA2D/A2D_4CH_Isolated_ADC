@@ -1,0 +1,98 @@
+{
+  "status": "complete",
+  "firmware_version": "V2.1.1",
+  "unit": "0003",
+  "hub": "1-10.4.1.1.1.4",
+  "unit0001_touched": false,
+  "defects": [
+    {
+      "id": "S1",
+      "severity": "P1",
+      "title": "Long malformed bootloader-prefix packets reset the CPU after control-line activity",
+      "reproduction": "1EAF_NOT_A_RESET followed by LF after repeated DTR changes; RAM calibration/address canaries vanished",
+      "fix": "Require exactly four bytes in the reset hook",
+      "verified": "targeted-fixed.json; exact-token upload-1.log"
+    },
+    {
+      "id": "S2",
+      "severity": "P2",
+      "title": "Extreme finite calibration causes nonnumeric ovf replies",
+      "reproduction": "CAL:VOLT 1,0,0,1e20,1 then CAL 1? returned 0.00000,ovf",
+      "fix": "Check the complete numeric group against the formatter range before emitting output; return ERROR:NUMERIC RANGE",
+      "verified": "targeted-fixed.json plus native positive/negative/boundary cases"
+    }
+  ],
+  "pending": [],
+  "baseline_evidence": "targeted-baseline.json",
+  "final_identity": "A2D Electronics,4CH Isolated ADC,0003,V2.1.1",
+  "remaining_known_defects": [],
+  "scope": "Release stress qualification; deferred enhancements excluded",
+  "verification": {
+    "host_groups": 62,
+    "host_adversarial": {
+      "passed": true,
+      "seed": 10670609,
+      "parser_cases": 250000,
+      "invalid_usb_dispatches": 78376,
+      "malformed_foreign_rs485_frames": 100000
+    },
+    "targeted_regressions": 6,
+    "hardware_fuzz_frames": 20000,
+    "invalid_numeric_calibrations": 5000,
+    "initial_state_cycles": 600,
+    "port_reopens": 100,
+    "soak": {
+      "backpressure_writes_completed": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "seconds": 600.11,
+      "counts": {
+        "tx_bytes": 31225737,
+        "replies": 27129,
+        "canary_checks": 1899,
+        "measurement_vectors": 22828,
+        "state_cycles": 11414,
+        "discarded_64k_frames": 457,
+        "backpressure_rounds": 12,
+        "unread_identity_requests": 60000
+      }
+    },
+    "successful_hub_uploads": 3,
+    "persistent_settings_checks": 23,
+    "update_cycle_checks": 15,
+    "final_smoke_checks": 34,
+    "final_measurement_checks": 10,
+    "samples_per_channel": 60
+  },
+  "implementation": {
+    "changes": [
+      "Exact four-byte bootloader token after existing control-line arming",
+      "Whole-reply finite numeric range guard before Arduino Print"
+    ],
+    "library_version": "1.0.0",
+    "settings_format_changed": false,
+    "deferred_features_implemented": false,
+    "binary_bytes": 53768,
+    "application_limit_bytes": 55296,
+    "free_application_bytes": 1528,
+    "static_ram_bytes": 6380
+  },
+  "limitations": [
+    "Unconnected inputs; no reference-voltage accuracy qualification",
+    "No physical RS485 peer or physical power-cut/I2C-fault fixture; those fault cases are modeled on host",
+    "V1-to-V2 migration not repeated; only V2.1.0-to-V2.1.1 update qualified in this run",
+    "A600-second soak and these probes do not prove absence of all possible faults"
+  ],
+  "evidence_directory": "../Validation/2026-11-21_Release_Stress"
+}

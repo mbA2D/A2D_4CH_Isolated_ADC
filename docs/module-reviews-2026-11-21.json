@@ -1,0 +1,102 @@
+{
+  "date": "2026-11-21",
+  "version": "V1.1.0",
+  "scope": "Independent read-only per-module reviews after refactor; reviewers had no serial/hardware access.",
+  "modules": [
+    {
+      "module": "Application/startup",
+      "agent_id": "01a2003e-96f5-7b70-b881-f05efc18a4d2",
+      "review": "**Clean within this scope: no actionable new defects found.**\n\n- [A2D_Application.cpp:5](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Application.cpp:5>) preserves command/reply ordering while forwarding is pending. Returning through `loop()` keeps the USB reset service reachable during that wait.\n- [firmware/main.cpp:7](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/firmware/main.cpp:7>) constructs dependencies in order with static lifetimes. Startup sequencing, baud rates, and conditional EEPROM reinitialization match the prior monolith.\n- Application buffers use the shared capacity, and the request is consumed synchronously without escaping references to stack storage.\n- The thin sketch\u00e2\u20ac\u2122s relative include resolves in place with the installed STM32 core\u00e2\u20ac\u2122s original-sketch include path. I found no confirmed entry-point defect.\n\n**Inherited limitations:** sustained complete USB commands can starve RS485 command processing; synchronous measurement/storage operations still delay subsequent loop work. These behaviors predate the refactor.\n\nValidation was source review against the supplied monolith, dependencies, and native tests. Tests cover partial USB fallback, boundary lengths, and forwarding timeout/recovery, but do not establish scheduler fairness or real startup timing. No tests or builds were run, no files changed, and no serial devices or hardware were accessed."
+    },
+    {
+      "module": "Board facade",
+      "agent_id": "01a20040-0781-7741-bc2e-df1ffa3cbd6c",
+      "review": "Clean: no actionable correctness issues found in [A2D_4CH_Isolated_ADC.h](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_4CH_Isolated_ADC.h>) or [.cpp](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_4CH_Isolated_ADC.cpp>).\n\nCompared against `git show HEAD:A2D_4CH_Isolated_ADC.cpp`:\n\n- Calibration argument forwarding preserves legacy calculations.\n- Init/reset, saved calibration/address reload, EEPROM reinitialization, and serial behavior remain compatible.\n- GPIO output setup, active-low LED, and RS485 receive/transmit polarity are preserved.\n\nAll four `test_services.cpp` groups passed using the actual MCP3425 driver in an isolated temporary build.\n\nLimits: GPIO modes were inspected statically because fake `pinMode()` is a no-op; physical GPIO, flash behavior, and hardware timing remain unverified. Service internals remain outside this review.\n\nNo repository edits, shared builds, serial access, or hardware operations; Unit0001 remained untouched."
+    },
+    {
+      "module": "Calibration",
+      "agent_id": "01a2003c-689d-79e2-a091-36b411934743",
+      "review_summary": "P3: old runner omitted real calibration tests; required asymmetric points, reset/load/bounds/rejected-input preservation. No correctness defect; isolated 100000 legacy bitwise comparisons passed.",
+      "main_agent_disposition": "Addressed while review ran: test_services links actual Calibration and tests asymmetric endpoints, negative slope, invalid channel, rejected/overflow inputs and persistence."
+    },
+    {
+      "module": "Command input",
+      "agent_id": "01a20040-07ef-79f2-a82e-482c91185938",
+      "review": "One actionable finding:\n\n- **[P2] Bound work per `poll()` call** \u00e2\u20ac\u201d [A2D_CommandInput.h:73](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_CommandInput.h:73>). The loop keeps reading while input remains available, including after overflow/NUL has invalidated the frame. A continuously replenished stream without LF can prevent return to the caller, starving the other transport and main-loop work. **Repro:** a fake port supplying successive 64-byte packets consumed 640,000 bytes in one call before an external guard stopped it. **Minimal fix:** impose a per-call byte budget, returning `0` when exhausted while preserving partial-line, discard, and pending-byte state.\n\nNo other correctness issues found within scope. Isolated header checks passed **21,752 fragmentation/packet schedules**, covering coalesced commands, split CRLF, NUL rejection, malformed-frame recovery, and output bounds. The documented maximum is consistent: **199 bytes before LF**, allowing **198 payload bytes plus CR** with CRLF.\n\nVerification was host-only; hardware timing remains unverified. No project edits, shared builds, serial access, or hardware actions were performed. Unit0001 remained untouched."
+    },
+    {
+      "module": "Dispatcher",
+      "agent_id": "01a2003c-6757-7061-8e99-6754b1a98bc4",
+      "review": "- **[P2] Forwarded calibration errors never reach USB** \u00e2\u20ac\u201d [A2D_Dispatcher.cpp:24](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Dispatcher.cpp:24>). Send `CAL:VOLT 5,0,0,1e30,1e-30` through the base board. Parsing succeeds, but the peer rejects the overflowing gain and replies `ERROR:INVALID ARGUMENTS`. Because forwarding only collects replies for measurement/calibration queries, that error is silently discarded. The equivalent local CH1 request correctly returns the error over USB.\n\n  **Minimal fix:** Apply the same coefficient validation before forwarding calibration commands, returning invalid-input errors locally while preserving silent success. Add a regression covering this case; the current calibration fake always returns success. This concerns the newly added rejection path\u00e2\u20ac\u201dthe monolith did not reject coefficient overflow.\n\nAll 20 existing host tests passed; an isolated two-board simulation using the real Calibration implementation confirmed the finding. No other actionable Dispatcher findings. No repository edits, shared builds, serial access, or hardware interaction; physical RS485 behavior remains untested."
+    },
+    {
+      "module": "Measurement",
+      "agent_id": "01a2003c-6966-7fd1-947c-adda12a41955",
+      "review": "No actionable findings in [A2D_Measurement.h](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Measurement.h>) or [A2D_Measurement.cpp](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Measurement.cpp>).\n\nEight isolated host checks passed using the pinned MCP3425 driver, covering reset ordering, bus selection, channel bounds, valid/invalid settings, signed ADC extrema, and trigger bytes. The four current service tests also passed.\n\nLimits: simulated I\u00c2\u00b2C cannot establish physical conversion timing, analog accuracy, or fault behavior. No repository files or shared build outputs were changed; no serial ports or hardware were accessed."
+    },
+    {
+      "module": "Protocol",
+      "agent_id": "01a2003c-67de-74c3-ac9a-8e2aee496428",
+      "review": "No correctness or compatibility defects found in the current Protocol module, including the new `Calibration::calculate` validation.\n\n- **[P3] Missing calibration argument-order regression** \u00e2\u20ac\u201d [A2D_Protocol.cpp:104](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Protocol.cpp:104>). Swapping ACTUAL/MEASURED pairs in a temporary copy still passes all 23 existing host tests. Add one direct parser test using four distinct values and assert `Request.points` preserves `ACTUAL1,MEASURED1,ACTUAL2,MEASURED2`.\n\nValidation: all 23 host regressions passed; 233,825 isolated parser cases matched expected behavior, including the intended coefficient overflow/underflow rejection.\n\nHost-only review. No workspace files changed, serial ports opened, or hardware touched."
+    },
+    {
+      "module": "SettingsStore",
+      "agent_id": "01a2003c-68f8-7a21-9f6d-90bb27e414d4",
+      "review": "No actionable correctness or compatibility findings in [A2D_SettingsStore.h](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_SettingsStore.h:1>) or [.cpp](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_SettingsStore.cpp:1>).\n\nIsolated host checks passed using the real module, Calibration, and STM32 `EEPROM.h` with an in-memory backend. Checks covered legacy offsets, float bit preservation, all address-byte values, invalid channels, initialization markers, and preservation of reserved bytes.\n\nCoverage gap: the [checked-in test runner](</D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/tools/run_tests.py:19>) never compiles SettingsStore. A small EEPROM-backed regression target covering legacy-image loading, initialization, and save boundaries would preserve these guarantees.\n\nLimits: flash timing, power interruption, and endurance were not tested. No repository files or shared build outputs changed; no serial ports or hardware accessed."
+    },
+    {
+      "module": "Transport",
+      "agent_id": "01a2003c-683d-77c3-8f6f-83cacedb53cd",
+      "review": "- **[P2, inherited] Forwarding length check omits CR \u00e2\u20ac\u201d [A2D_Transport.cpp:26](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Transport.cpp:26>).** A valid `MEAS:VOLT 5?` padded with trailing spaces to 197 characters passes this check. The `\"1 \"` prefix produces 199 characters, then `println()` appends CRLF. The peer\u00e2\u20ac\u2122s 200-byte reader rejects the CR as overflow and silently discards the query, causing a timeout. Reproduced with isolated host tests. The saved monolith contains the same check.\n  \n  Minimal fix: use `strlen(line) + prefix + 1 >= LineCapacity` to account for CR. Add forwarding boundary tests: accept/reject lengths 196/197 for one-digit addresses and 195/196 for two-digit addresses; existing tests miss this boundary.\n\nNo other actionable Transport findings. All 20 existing host tests passed, alongside targeted checks for RS485 ownership through flush, fragmented replies, stale-input clearing, and timeout boundaries.\n\nNo source edits, shared-build mutations, serial-port access, or hardware interaction. Physical RS485 timing remains unverified."
+    },
+    {
+      "module": "USB bootloader",
+      "agent_id": "01a20040-086c-7a93-955b-69bdb46e2ddd",
+      "review": "Clean: **no actionable correctness findings** in [A2D_USB_Bootloader.h](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_USB_Bootloader.h>) or [A2D_USB_Bootloader.cpp](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_USB_Bootloader.cpp>).\n\n- **Deferred flag:** appropriate for the STM32F103 ISR/main-loop handoff. Repeated requests coalesce; clearing the flag cannot cancel the reset already being serviced.\n- **Token consumption:** core 2.12 invokes the hook before committing received bytes. Setting `*length = 0` prevents the reset packet from reaching command parsing.\n- **Disconnect sequence:** `Serial.end()` stops/deinitializes CDC before PA12 is driven low in open-drain mode. The 500 ms delay runs outside the ISR, with SysTick available.\n- **Integration:** service runs first in [main.cpp:22](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/firmware/main.cpp:22>). Current flags enable the hook without the conflicting legacy handler. The module introduces no command-format or calibration-storage changes.\n\n**Validation:** all five existing USB reset host checks passed, compiled with strict warnings into an isolated temporary directory.\n\n**Limits:** host fakes cannot verify electrical disconnect timing or hub/DFU enumeration. Prior V1.0.5 hub qualification was not repeated. No project edits, shared builds, serial access, or hardware actions; Unit0001 and Unit0003 remained untouched."
+    }
+  ],
+  "dispositions": [
+    {
+      "module": "Protocol",
+      "finding": "P3: no regression asserted all four calibration point positions",
+      "assessment": "Accepted. Parser was correct; inadequate coverage could hide pair swaps.",
+      "resolution": "Direct owned-request assertions use four distinct points; dispatcher integration also verifies every argument."
+    },
+    {
+      "module": "Dispatcher",
+      "finding": "P2: forwarded calibration overflow errors were lost because calibration writes are silent on success",
+      "assessment": "Accepted. New finite-coefficient rejection must be consistent before routing.",
+      "resolution": "Shared Calibration::calculate validates coefficients in Protocol before local execution or forwarding. Regression covers CH1 and CH5."
+    },
+    {
+      "module": "Transport",
+      "finding": "P2, inherited: maximum forwarded line ignored CR from println",
+      "assessment": "Accepted. A valid long USB line could be silently discarded by an RS485 peer.",
+      "resolution": "Forwarding reserves prefix plus CR. Tests cover one-/two-digit address accept/reject boundaries; isolated-bus hardware smoke checks also passed."
+    },
+    {
+      "module": "Command input",
+      "finding": "P2, inherited: continuously replenished input without LF could monopolize poll",
+      "assessment": "Accepted. A byte budget is a minimal fix without adding buffering layers.",
+      "resolution": "Poll consumes at most 64 bytes and retains frame/discard/cache state. Continuous-source, RS485 service and recovery regressions pass; 4096-byte hardware burst recovers."
+    },
+    {
+      "module": "Calibration/SettingsStore",
+      "finding": "P3: original runner did not execute real service implementations",
+      "assessment": "Accepted as coverage gap; no implementation defect found.",
+      "resolution": "test_services links real modules, facade and pinned MCP3425 driver against EEPROM/I2C fakes, testing legacy byte layout, endpoint math, rejected inputs, reset order, bus injection and saved-state reload."
+    }
+  ],
+  "followup": {
+    "agent_id": "01a20042-9535-7743-ae83-c4d0c5594e68",
+    "review": "**Accepted/resolved for all requested fixes and coverage. No concrete defects found within this scope.**\n\n- **Transport:** [CR accounting](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Transport.cpp:27>) correctly permits 196-byte commands with one-digit addresses and 195-byte commands with two-digit addresses, rejecting the next byte.\n- **Calibration:** [Protocol validation](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Protocol.cpp:106>) rejects invalid calculations before either routing path. [Calibration::calibrate](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_Calibration.cpp:11>) uses the same helper and preserves coefficients on rejection.\n- **CommandInput:** [The bounded loop](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/A2D_CommandInput.h:75>) processes at most 64 bytes per call while retaining framing, overflow, and cached-input state. Flood scheduling and recovery coverage passes.\n- **Parser coverage:** [Direct assertions](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/tests/test_firmware.cpp:280>) verify all four distinct calibration points in order.\n- **Service coverage:** [test_services.cpp](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/tests/test_services.cpp:14>) exercises real Calibration and SettingsStore implementations; [the runner](<D:/Documents/A2D/Projects/003 - Isolated 4CH ADC/Firmware/tools/run_tests.py:26>) correctly compiles them.\n\nThe isolated host run passed **26 application tests, four service tests, and five reset checks**. Reverting each safeguard in temporary copies triggered its named regression, including calibration overflow for both local and remote channels.\n\nRepository files and shared builds remained unchanged. No serial or hardware access; **Unit0001 remained untouched**."
+  },
+  "unresolved_findings": [],
+  "limitations": [
+    "Unconnected inputs cannot establish absolute analog accuracy; output resolution is 0.1mV.",
+    "No physical multi-board RS485 chain tested; unit0003 RS485 terminals are disconnected and unit0001 is excluded.",
+    "MCP3425 dependency retains its existing I2C error/freshness limitations.",
+    "Sustained complete USB commands retain priority over incoming RS485 commands; synchronous hardware/storage calls still take execution time.",
+    "No power-interruption/endurance or manufacturing fixture qualification performed."
+  ]
+}
