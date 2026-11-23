@@ -1,0 +1,172 @@
+{
+  "time_utc": "2026-11-22T19:41:27.134426+00:00",
+  "version": "V5.0.0",
+  "library_version": "3.1.0",
+  "passed": true,
+  "policy": {
+    "replies": "query responses only; failed queries emit no data",
+    "queue_capacity": 8,
+    "queue_scope": "one per board, shared by USB and addressed RS485",
+    "queue_persistence": "survives USB sessions and *RST; cleared by *CLS or MCU restart",
+    "overflow": "oldest seven plus -350"
+  },
+  "deferred": [
+    "status registers",
+    "completion commands",
+    "RS485 acknowledgements",
+    "remote queue aggregation"
+  ],
+  "target": {
+    "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+    "port": "COM10",
+    "usb_serial": "4977386D3659",
+    "usb_location": "1-10.4.1.1.1.4"
+  },
+  "excluded_unit": "0001 (never opened/flashed)",
+  "image": {
+    "bytes": 43884,
+    "sha256": "10bd9c9fddc0aaba833d4808af189d25a8f1b8f3ea1e5bc8dfe5c5de915d5806",
+    "flash_free_bytes": 11412,
+    "linker_ram_bytes": 8688
+  },
+  "host": {
+    "portable_scpi_groups": 16,
+    "application_groups": 50,
+    "board_service_groups": 17,
+    "cdc_groups": 3,
+    "bootloader_checks": 4,
+    "numeric_cases": 16,
+    "standalone_C_example": true,
+    "python_tests": 31,
+    "passed": true
+  },
+  "hardware": {
+    "errors": {
+      "passed": true,
+      "checks": [
+        "silent rejection, correct queried code: BOGUS",
+        "silent rejection, correct queried code: MEAS:VOLT 1?",
+        "silent rejection, correct queried code: INSTR:GAIN 4 1",
+        "silent rejection, correct queried code: INSTR:LED hello",
+        "silent rejection, correct queried code: INSTR:LED 2",
+        "silent rejection, correct queried code: MEAS:VOLT? 129",
+        "silent rejection, correct queried code: INSTR:GAIN 3,1",
+        "silent rejection, correct queried code: CAL:VOLT 1,0,0,4,1",
+        "silent rejection, correct queried code: CAL:VOLT 1,0,nan,2.75,1",
+        "silent rejection, correct queried code: SYST:BOOT;*IDN?",
+        "silent rejection, correct queried code: SYST:SER:SET 0004",
+        "silent rejection, correct queried code: SYST:ERR? 1",
+        "failed setter and failed query remain silent without a following query",
+        "repeat provisioning has no OK reply and preserves identity",
+        "eight-entry FIFO preserves oldest seven and reports overflow once",
+        "CLS clears queue without changing gain, calibration, address or serial",
+        "error queue and RAM canaries survive USB close/open",
+        "RST reloads settings without clearing errors",
+        "missing RS485 peer produces only a queried timeout error",
+        "four actual inputs read and saved settings restored with empty queue"
+      ],
+      "counts": {
+        "tx_bytes": 2038,
+        "replies": 111,
+        "canary_checks": 17,
+        "measurement_vectors": 2
+      }
+    },
+    "syntax": {
+      "passed": true,
+      "rejected_commands": 43
+    },
+    "fuzz": {
+      "passed": true,
+      "seed": 261123,
+      "counts": {
+        "tx_bytes": 7292691,
+        "replies": 41887,
+        "canary_checks": 627,
+        "malformed_or_blank_frames": 20000
+      },
+      "seconds": 25.876
+    },
+    "packets": {
+      "passed": true,
+      "checks": 280
+    },
+    "sessions": {
+      "passed": true,
+      "checks": 51
+    },
+    "measurement": {
+      "passed": true,
+      "checks": 10,
+      "configuration_sweep": 12,
+      "channels": [
+        {
+          "channel": 1,
+          "count": 30,
+          "mean_volts": 0.0,
+          "min_volts": 0.0,
+          "max_volts": 0.0,
+          "stddev_volts": 0.0,
+          "mean_raw_volts": 0.0
+        },
+        {
+          "channel": 2,
+          "count": 30,
+          "mean_volts": 0.0,
+          "min_volts": 0.0,
+          "max_volts": 0.0,
+          "stddev_volts": 0.0,
+          "mean_raw_volts": 0.0
+        },
+        {
+          "channel": 3,
+          "count": 30,
+          "mean_volts": 0.0,
+          "min_volts": 0.0,
+          "max_volts": 0.0,
+          "stddev_volts": 0.0,
+          "mean_raw_volts": 0.0
+        },
+        {
+          "channel": 4,
+          "count": 30,
+          "mean_volts": 0.00043333333333333337,
+          "min_volts": 0.0004,
+          "max_volts": 0.0005,
+          "stddev_volts": 4.714045207910316e-05,
+          "mean_raw_volts": 0.00013000000000000002
+        }
+      ]
+    },
+    "hub_uploads": [
+      "20261122T193446Z",
+      "20261122T193822Z"
+    ],
+    "final": {
+      "time_utc": "2026-11-22T19:38:27.135889+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+        "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0002"
+      },
+      "error_queue": "0,\"No error\"",
+      "adc_configuration": {
+        "gain": "1,1,1,1",
+        "rate": "15,15,15,15",
+        "mode": "1,1,1,1"
+      }
+    }
+  },
+  "limits": [
+    "All inputs unconnected; no reference-voltage accuracy qualification",
+    "No physical RS485 peer; missing-peer timeout and host simulation only",
+    "ADC/storage/UART fault injection performed in host tests"
+  ],
+  "evidence_directory": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_SCPI_Errors"
+}

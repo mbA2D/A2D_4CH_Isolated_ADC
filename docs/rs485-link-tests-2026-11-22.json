@@ -1,0 +1,89 @@
+{
+  "time_utc": "2026-11-22T23:13:17.998796+00:00",
+  "firmware": "V5.0.0",
+  "overall_passed": false,
+  "physical_request_reply_link_verified": true,
+  "working_role": {
+    "master": "0003",
+    "peer": "0001",
+    "temporary_peer_address": 1,
+    "queries_passed": 709,
+    "setter_variations_verified": 36,
+    "ordered_burst_replies": 48,
+    "USB_RS485_concurrency_rounds": 100,
+    "highest_peer_address": 31,
+    "highest_global_channel": 128,
+    "latency_ms": {
+      "median": 7.888,
+      "maximum": 69.243
+    },
+    "timeout_recovery_seconds": 1.006,
+    "repeat_run_queries_passed": 233
+  },
+  "blocked_role": {
+    "master": "0001",
+    "peer": "0003",
+    "queries_and_setters_blocked": true,
+    "queued_error": "-320,\"Storage fault\"",
+    "stage": "Master durable request-ID allocation, before UART transmission",
+    "confirmed": "Measurement/configuration queries and a configuration setter fail immediately; peer setting remains unchanged",
+    "likely_cause": "Request-ID namespace left disabled by the V1.0.2-to-V5 migration; inferred from allocation code, successful legacy storage migration/provisioning and immediate failure. Raw journal counter not read through SCPI.",
+    "probes": [
+      {
+        "command": "INSTR:GAIN? 5",
+        "identity_fence_ms": 1.774,
+        "error": "-320,\"Storage fault\""
+      },
+      {
+        "command": "MEAS:VOLT? 5",
+        "identity_fence_ms": 1.747,
+        "error": "-320,\"Storage fault\""
+      },
+      {
+        "command": "INSTR:DR 60,5",
+        "identity_fence_ms": 1.936,
+        "error": "-320,\"Storage fault\""
+      }
+    ]
+  },
+  "restoration": {
+    "requested": "Restore original addresses after testing",
+    "verified": true,
+    "addresses": {
+      "0001": 0,
+      "0003": 0
+    },
+    "ADC_configuration": "Restored to pre-test values",
+    "calibration": "Unchanged",
+    "error_queues": "Empty",
+    "after": {
+      "0003": {
+        "*IDN?": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "INSTR:GAIN? 0": "1,1,1,1",
+        "INSTR:DR? 0": "15,15,15,15",
+        "INSTR:MODE? 0": "1,1,1,1",
+        "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+        "SYST:ERR?": "0,\"No error\""
+      },
+      "0001": {
+        "*IDN?": "A2D Electronics,4CH Isolated ADC,0001,V5.0.0",
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+        "INSTR:GAIN? 0": "1,1,1,1",
+        "INSTR:DR? 0": "15,15,15,15",
+        "INSTR:MODE? 0": "1,1,1,1",
+        "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0003",
+        "SYST:ERR?": "0,\"No error\""
+      }
+    }
+  },
+  "limitations": [
+    "No external voltage reference; reading comparisons are functional checks",
+    "No CRC/line-noise or multi-master qualification",
+    "0001 cannot currently act as master; no request-ID reset or firmware change attempted"
+  ],
+  "evidence_directory": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Two_Units",
+  "test_script": "tools/rs485_link_test.py"
+}

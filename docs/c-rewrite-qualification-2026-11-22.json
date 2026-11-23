@@ -1,0 +1,211 @@
+{
+  "time_utc": "2026-11-22T16:34:45.164375+00:00",
+  "passed": true,
+  "version": "V3.1.0",
+  "branch": "stm32-hal-migration",
+  "published": false,
+  "target": {
+    "serial": "0003",
+    "port": "COM10",
+    "usb_uid": "4977386D3659",
+    "hub": "1-10.4.1.1.1.4",
+    "unit_0001": "not opened or programmed"
+  },
+  "firmware": {
+    "language": "C11 plus startup assembly",
+    "compile_source_files": 38,
+    "cxx_source_files": 0,
+    "bytes": 43020,
+    "sha256": "8126f64ad2c479d1f2bce1a67e65f0a812c8234c061fbe3705dc091502085d00",
+    "free_of_54KiB": 12276,
+    "link_ram_bytes_including_3KiB_heap_stack_reservation": 8664,
+    "compiler": "standalone Arm GNU10.3.1",
+    "previous_hal_cpp_bytes": 41908,
+    "size_delta_bytes_with_review_fixes": 1112,
+    "fresh_rebuild_identical": true
+  },
+  "review": {
+    "completed_reviewers": {
+      "acquisition": "Zeno",
+      "persistence": "Huygens",
+      "scpi": "Parfit",
+      "application": "Goodall",
+      "platform": "Kierkegaard",
+      "system": "Popper"
+    },
+    "module_passes": "before and after port",
+    "independent_scpi_additional_review": true,
+    "new_unresolved_c_port_findings": 0,
+    "fixed_unique_findings": 8,
+    "deferred_or_retained": [
+      "Forwarded setters have no remote success/error acknowledgements; issue1 remains deferred",
+      "Interrupted first-ever initialization/unknown namespace deliberately fails closed; manufacturing/service recovery and allocation test required"
+    ],
+    "report_sha256": {
+      "reviews\\post-c\\acquisition.md": "9f9e82c91ae770d6c405376d2b7def89d0fa1d1de752e5bb5f3f1ed653eb7ec2",
+      "reviews\\post-c\\application.md": "7e45dd5430259e43b83b6b6d8d655559baec3d28580876f684aaf2014c7abc77",
+      "reviews\\post-c\\persistence.md": "973ec62e951d935841a74697ea66450712fbc569674de374996deb9113483b85",
+      "reviews\\post-c\\platform.md": "930b6a15f88c516e1b3529d4d97493f18d3d7caba02a5cbc4eb7d73cd65b0f3a",
+      "reviews\\post-c\\scpi-independent.md": "cdd52960ef650eb35f75ce06bf943b36e0512dae3713709c56e5f3c9cf38730d",
+      "reviews\\post-c\\scpi.md": "97efb3262d71e7bc2794e9ed1609fb4690c07c9e9174f69e3db99e7a192c9b9c",
+      "reviews\\post-c\\system.md": "0a7b36eb8125acd1273fe85edb3088608f7e2046aa795509839d4d55cb695239",
+      "reviews\\pre-c\\acquisition.md": "5b4cc8e3ee7cfd47a5bea19be4fb16381cda245683e7569e49cbf06177045f95",
+      "reviews\\pre-c\\application.md": "943ae96c5ef564a0b5ab51eebaf17fc6750570833c19fe595eaff26b83280166",
+      "reviews\\pre-c\\persistence.md": "9989d58d6addc1c9950fe4ec7acad99fa509277c3f1944a3c53098b653087f3d",
+      "reviews\\pre-c\\platform.md": "4db0283333b4ec39b05c38eb3ed2346af38a8a1f61e743c0ca1ed7639fbcbabc",
+      "reviews\\pre-c\\scpi.md": "482c461146bc2bdad7ee37ee2a461624f7f93c0db49eeab30cb391a1bd0dd941",
+      "reviews\\pre-c\\system.md": "024821351c1feb6831600c7d99c0eece5ec55aefc99f4020ae23d31ffd6aed3b"
+    }
+  },
+  "host": {
+    "production_compiled_as_c11": true,
+    "portable_scpi_groups": 14,
+    "application_groups": 40,
+    "services_groups": 15,
+    "cdc_groups": 3,
+    "deferred_reset_checks": 4,
+    "formatter_cases": 16,
+    "copied_c_package_example": true,
+    "python_unit_tests": 21,
+    "all_passed": true,
+    "independent_system_interaction_groups": 13,
+    "protocol_comparisons": 1199222,
+    "formatter_independent_cases": 5172993,
+    "calibration_differential_cases": 40020,
+    "signed_adc_scaling_cases": 344064
+  },
+  "hardware": {
+    "command_checks": 34,
+    "range_checks": 164,
+    "packet_checks": 280,
+    "session_checks": 315,
+    "ordered_delayed_read_replies": 6000,
+    "midpoint_cases_on_target": 2,
+    "serial_persistence_checks": 33,
+    "persistence_checks": 23,
+    "measurement_checks": 10,
+    "fuzz": {
+      "tx_bytes": 34839391,
+      "replies": 96856,
+      "canary_checks": 3127,
+      "malformed_or_blank_frames": 100000
+    },
+    "soak_seconds": 600.027,
+    "soak": {
+      "tx_bytes": 29604205,
+      "replies": 25676,
+      "canary_checks": 1799,
+      "measurement_vectors": 21614,
+      "state_cycles": 10807,
+      "discarded_64k_frames": 433,
+      "backpressure_rounds": 12,
+      "unread_identity_requests": 60000
+    },
+    "stored_vs_live_update_test": {
+      "passed": true,
+      "stored": {
+        "time_utc": "2026-11-22T16:32:36.145322+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V3.1.0",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "7",
+          "CAL 0?": "-0.12500,2.75000,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT 0?": "0.3438,0.0000,0.0000,0.0004",
+          "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0002"
+        }
+      },
+      "live": {
+        "time_utc": "2026-11-22T16:32:36.197395+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V3.1.0",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "9",
+          "CAL 0?": "0.12500,2.75000,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT 0?": "-0.3438,0.0000,0.0000,0.0004",
+          "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0001"
+        }
+      },
+      "after": {
+        "time_utc": "2026-11-22T16:32:41.134409+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V3.1.0",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "7",
+          "CAL 0?": "-0.12500,2.75000,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT 0?": "0.3438,0.0000,0.0000,0.0004",
+          "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0002"
+        }
+      }
+    },
+    "repeat_hub_updates_passed": true,
+    "input_channels": [
+      {
+        "channel": 1,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 2,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 3,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 4,
+        "count": 60,
+        "mean_volts": 0.0004383333333333333,
+        "min_volts": 0.0004,
+        "max_volts": 0.0005,
+        "stddev_volts": 4.86198404860494e-05,
+        "mean_raw_volts": 0.000135
+      }
+    ],
+    "final_snapshot": {
+      "time_utc": "2026-11-22T16:32:46.157458+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V3.1.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL 0?": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT 0?": "0.0000,0.0000,0.0000,0.0004",
+        "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0001"
+      }
+    }
+  },
+  "limitations": [
+    "Unconnected inputs do not establish reference accuracy or changing-signal freshness",
+    "RS485 disconnected: no second physical peer/electrical timing qualified",
+    "Host power-cut injection is not actual flash brownout testing",
+    "No manufacturing SWD or cross-PC driver qualification",
+    "No new loader, signature, rollback or interrupted-update recovery protocol"
+  ],
+  "evidence_folder": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_C_Rewrite"
+}

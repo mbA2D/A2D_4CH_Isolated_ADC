@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from device_snapshot import identify
+from scpi_errors import expect_error, parse_error
 
 
 def run(args):
@@ -29,6 +30,7 @@ def run(args):
         raise RuntimeError("USB location differs from the explicitly selected hub path")
 
     with connection:
+        connection.write(b"*CLS\n")
         def query(command):
             connection.write((command + "\n").encode("ascii"))
             answer = connection.readline().decode("ascii").strip()
@@ -53,7 +55,7 @@ def run(args):
                 raise RuntimeError(f"Invalid numeric response {text!r}")
             return values
 
-        baseline_cal = query("CAL 0?")
+        baseline_cal = query("CAL? 0")
         baseline_address = query("INSTR:RS485?")
         report["calibration_before"] = baseline_cal
         report["address_before"] = baseline_address
@@ -63,8 +65,8 @@ def run(args):
             time.sleep(0.2)
             for i in range(args.samples):
                 started = time.monotonic()
-                raw = query("MEAS:VOLT:ADC 0?")
-                calibrated = query("MEAS:VOLT 0?")
+                raw = query("MEAS:VOLT:ADC? 0")
+                calibrated = query("MEAS:VOLT? 0")
                 report["samples"].append({
                     "time_utc": datetime.now(timezone.utc).isoformat(),
                     "raw_text": raw, "voltage_text": calibrated,
@@ -79,13 +81,13 @@ def run(args):
                 for rate in (15, 60, 240):
                     command(f"INSTR:DR {rate},0")
                     time.sleep(0.2)
-                    raw = vector(query("MEAS:VOLT:ADC 0?"), 4)
-                    calibrated = vector(query("MEAS:VOLT 0?"), 4)
+                    raw = vector(query("MEAS:VOLT:ADC? 0"), 4)
+                    calibrated = vector(query("MEAS:VOLT? 0"), 4)
                     singles = []
                     for ch in range(1, 5):
                         singles.append({"channel": ch,
-                                        "raw": vector(query(f"MEAS:VOLT:ADC {ch}?"), 1)[0],
-                                        "volts": vector(query(f"MEAS:VOLT {ch}?"), 1)[0]})
+                                        "raw": vector(query(f"MEAS:VOLT:ADC? {ch}"), 1)[0],
+                                        "volts": vector(query(f"MEAS:VOLT? {ch}"), 1)[0]})
                     report["configuration_sweep"].append({"gain": gain, "rate_sps": rate,
                                                            "raw_volts": raw, "volts": calibrated,
                                                            "individual_channels": singles})
@@ -95,34 +97,34 @@ def run(args):
             command("INSTR:MODE 0,0")
             command("*TRG")
             time.sleep(0.2)
-            report["single_shot_volts"] = vector(query("MEAS:VOLT 0?"), 4)
+            report["single_shot_volts"] = vector(query("MEAS:VOLT? 0"), 4)
             check("single-shot trigger returns four readings", True)
             command("INSTR:MODE 1,0")
             time.sleep(0.2)
 
             # Exercise host point order, formatting, and calibration application in RAM.
             command("CAL:VOLT 1,0,-0.125,2.75,0.875")
-            check("legacy two-point calibration order and format", query("CAL 1?") == "-0.12500,2.75000")
-            raw = vector(query("MEAS:VOLT:ADC 1?"), 1)[0]
-            measured = vector(query("MEAS:VOLT 1?"), 1)[0]
+            check("legacy two-point calibration order and format", query("CAL? 1") == "-0.12500,2.75000")
+            raw = vector(query("MEAS:VOLT:ADC? 1"), 1)[0]
+            measured = vector(query("MEAS:VOLT? 1"), 1)[0]
             report["temporary_calibration"] = {"raw_volts": raw, "volts": measured,
                                                  "expected_from_displayed_raw": (raw + 0.125) * 2.75}
             # Queries are separate conversions, each rounded to 4 decimals.
             check("calibration affects actual ADC reading", abs(measured - (raw + 0.125) * 2.75) < 0.002)
-            check("nonfinite calibration rejected", query("CAL:VOLT 1,0,nan,5,1") == "ERROR:INVALID ARGUMENTS")
-            check("invalid calibration preserves current coefficients", query("CAL 1?") == "-0.12500,2.75000")
+            check("nonfinite calibration rejected", expect_error(connection, identity, "CAL:VOLT 1,0,nan,5,1", -128) == -128)
+            check("invalid calibration preserves current coefficients", query("CAL? 1") == "-0.12500,2.75000")
 
             # The next command must wait behind the missing-peer response, not overtake it.
             start = time.monotonic()
-            connection.write(b"MEAS:VOLT 5?\n*IDN?\n")
+            connection.write(b"MEAS:VOLT? 5\n*IDN?\nSYST:ERR?\n")
             first = connection.readline().decode("ascii").strip()
             second = connection.readline().decode("ascii").strip()
             report["forward_timeout_seconds"] = round(time.monotonic() - start, 6)
-            check("asynchronous forwarding keeps response order", first == "ERROR:RS485 TIMEOUT" and second == identity)
+            check("asynchronous forwarding keeps response order", first == identity and parse_error(second)[0] == 1101)
         finally:
             command("*RST")
             time.sleep(0.2)
-            restored_cal = query("CAL 0?")
+            restored_cal = query("CAL? 0")
             restored_address = query("INSTR:RS485?")
             report["calibration_after"] = restored_cal
             report["address_after"] = restored_address

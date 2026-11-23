@@ -12,7 +12,8 @@ from pathlib import Path
 import serial
 from serial.tools import list_ports
 
-from device_snapshot import identify, snapshot
+from device_snapshot import identify, snapshot, read_snapshot
+from provision_identity import provision
 
 APPLICATION_START = 0x08002000
 APPLICATION_END = 0x0800F800
@@ -27,7 +28,11 @@ def check_image(binary, expected_serial, expected_version=None):
         raise RuntimeError("Invalid STM32F103 initial stack pointer")
     if not reset & 1 or not APPLICATION_START <= (reset & ~1) < APPLICATION_END:
         raise RuntimeError("Binary is not linked for the 0x08002000 application address")
-    if expected_serial.encode("ascii") + b"\0" not in image:
+    common_image = expected_version and tuple(map(int, expected_version[1:].split('.'))) >= (2, 2, 0)
+    if common_image:
+        if b'A2D Electronics\0' not in image or b'4CH Isolated ADC\0' not in image:
+            raise RuntimeError('Common firmware product identity is absent')
+    elif expected_serial.encode("ascii") + b"\0" not in image:
         raise RuntimeError("Expected device serial is absent from the firmware image")
     if expected_version and expected_version.encode("ascii") + b"\0" not in image:
         raise RuntimeError("Expected firmware version is absent from the image")
@@ -98,14 +103,14 @@ def require_single_maple(output, physical_path):
 def update(args):
     check_image(args.binary, args.serial, args.version)
     if args.port == "UNSET":
-        raise RuntimeError("Set upload_port in platformio.local.ini or pass --upload-port")
+        raise RuntimeError("Set port in upload.local.json or pass --port")
     before = snapshot(args.port, args.serial, args.usb_serial)
     if not before["usb_serial"] or not before["usb_location"]:
         raise RuntimeError("A stable USB identity and physical port path are required")
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     records = args.binary.parent / "uploads" / timestamp
     records.mkdir(parents=True, exist_ok=True)
-    (records / "before.json").write_text(json.dumps(before, indent=2) + "\n", encoding="utf-8")
+    (records / "before-live.json").write_text(json.dumps(before, indent=2) + "\n", encoding="utf-8")
     started = time.monotonic()
     events = []
 
@@ -122,6 +127,13 @@ def update(args):
     print(f"Verified {identity} on {args.port}, USB path {descriptor.location}", flush=True)
     record("application_identified", identity=identity, usb_path=descriptor.location)
     try:
+        if not descriptor.location or descriptor.location != before["usb_location"]:
+            raise RuntimeError("USB path changed between verification steps; refusing reset")
+        live = before
+        before = read_snapshot(connection, descriptor, identity, reload_settings=True)
+        (records / "before.json").write_text(json.dumps(before, indent=2) + "\n", encoding="utf-8")
+        record("stored_settings_loaded", unsaved_settings_discarded=any(
+            live["queries"][command] != before["queries"][command] for command in ("CAL? 0", "INSTR:RS485?")))
         record("reset_requested")
         reset_to_bootloader(connection, identity.split(",")[3])
         # Closing drops DTR and purges unfinished USB traffic in new firmware.
@@ -180,7 +192,12 @@ def update(args):
                 after = snapshot(ports[0].device, args.serial, before["usb_serial"])
                 break
             except (RuntimeError, serial.SerialException):
-                pass
+                if getattr(args, 'provision_serial', False):
+                    try:
+                        provision(ports[0].device, args.serial, before['usb_serial'], before['usb_location'])
+                        record('serial_provisioned', serial=args.serial)
+                    except (RuntimeError, serial.SerialException):
+                        pass
         time.sleep(0.25)
     if after is None:
         record("application_timeout")
@@ -188,24 +205,47 @@ def update(args):
     (records / "after.json").write_text(json.dumps(after, indent=2) + "\n", encoding="utf-8")
     if after["identity"].split(",")[3] != args.version:
         raise RuntimeError(f"Running version does not match {args.version}: {after['identity']}")
-    for command in ("CAL 0?", "INSTR:RS485?"):
+    for command in ("CAL? 0", "INSTR:RS485?"):
         if after["queries"][command] != before["queries"][command] and not args.allow_settings_reset:
             raise RuntimeError(f"Persistent settings changed: {command}; backups are in {records}")
     if "finished!" not in flash_output and "Download done." not in flash_output:
         raise RuntimeError(f"dfu-util failed (exit {flashed.returncode}); inspect {records}")
-    record("application_verified", identity=after["identity"], port=after["port"], settings_preserved=all(after["queries"][c] == before["queries"][c] for c in ("CAL 0?", "INSTR:RS485?")))
+    record("application_verified", identity=after["identity"], port=after["port"], settings_preserved=all(after["queries"][c] == before["queries"][c] for c in ("CAL? 0", "INSTR:RS485?")))
     print(f"Verified {after['identity']} on {after['port']}; settings verification complete", flush=True)
     print(f"Upload records: {records}", flush=True)
 
 
 if __name__ == "__main__":
+    preliminary = argparse.ArgumentParser(add_help=False)
+    preliminary.add_argument("--config", type=Path, default=Path("upload.local.json"))
+    known, _ = preliminary.parse_known_args()
+    config = json.loads(known.config.read_text(encoding="utf-8-sig")) if known.config.exists() else {}
+    root = Path(__file__).resolve().parents[1]
+    version = re.search(r'#define VERSION "([^"]+)"', (root / "A2D_BoardConfig.h").read_text()).group(1)
+    # Optional local tool cache; explicit command-line/config paths take precedence.
+    cached_dfu = Path.home() / ".cache" / "a2d-tools" / "dfu"
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--port", required=True)
-    parser.add_argument("--serial", required=True)
-    parser.add_argument("--version", required=True)
+    parser.add_argument("--config", type=Path, default=known.config)
+    parser.add_argument("--port")
+    parser.add_argument("--serial")
+    parser.add_argument("--version", default=version)
     parser.add_argument("--usb-serial")
+    parser.add_argument("--provision-serial", action="store_true", help="Explicitly provision the verified target after its first common-image update")
     parser.add_argument("--allow-settings-reset", action="store_true", help="Allow intentional new-format defaults; before/after values are backed up")
-    parser.add_argument("--binary", type=Path, required=True)
-    parser.add_argument("--dfu-util", type=Path, required=True)
-    parser.add_argument("--maple-dfu-util", type=Path, required=True)
-    update(parser.parse_args())
+    parser.add_argument("--binary", type=Path, default=root / "build" / "release" / "firmware.bin")
+    parser.add_argument("--dfu-util", type=Path, default=cached_dfu / "modern" / "dfu-util.exe")
+    parser.add_argument("--maple-dfu-util", type=Path, default=cached_dfu / "maple" / "dfu-util.exe")
+    allowed = {action.dest for action in parser._actions} - {"help", "config", "provision_serial", "allow_settings_reset"}
+    if set(config) - allowed:
+        parser.error("Unknown or unsafe local configuration keys")
+    parser.set_defaults(**config)
+    args = parser.parse_args()
+    for key in ("binary", "dfu_util", "maple_dfu_util"):
+        setattr(args, key, Path(getattr(args, key)))
+    if not args.port or not args.serial or not args.usb_serial:
+        parser.error("port, serial and usb_serial are required (CLI or local config)")
+    if not isinstance(args.serial, str) or not re.fullmatch(r"[0-9]{4}", args.serial):
+        parser.error("serial must be a string containing exactly four digits")
+    if not isinstance(args.port, str) or not isinstance(args.usb_serial, str):
+        parser.error("port and usb_serial must be strings")
+    update(args)

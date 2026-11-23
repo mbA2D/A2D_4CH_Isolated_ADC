@@ -1,0 +1,205 @@
+{
+  "time_utc": "2026-11-22T22:55:53.492311+00:00",
+  "firmware": "V5.0.0",
+  "image_bytes": 43884,
+  "image_sha256": "10bd9c9fddc0aaba833d4808af189d25a8f1b8f3ea1e5bc8dfe5c5de915d5806",
+  "passed": true,
+  "units": [
+    {
+      "time_utc": "2026-11-22T22:55:20.525795+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0005",
+        "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0002"
+      },
+      "adc_configuration": {
+        "INSTR:GAIN? 0": "1,1,1,1",
+        "INSTR:DR? 0": "15,15,15,15",
+        "INSTR:MODE? 0": "1,1,1,1"
+      },
+      "measurement_samples_volts": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0004
+        ]
+      ],
+      "measurement_mean_volts": [
+        0.0,
+        0.0,
+        0.0,
+        0.00044
+      ],
+      "error_queue": "0,\"No error\"",
+      "settings_readback_preserved": true,
+      "passed": true
+    },
+    {
+      "time_utc": "2026-11-22T22:55:21.237736+00:00",
+      "port": "COM9",
+      "usb_serial": "4976386E3659",
+      "usb_location": "1-1",
+      "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+        "MEAS:VOLT? 0": "3.7312,0.0026,-0.0015,0.0001",
+        "MEAS:VOLT:ADC? 0": "1.3186,0.0000,0.0000,0.0001"
+      },
+      "adc_configuration": {
+        "INSTR:GAIN? 0": "1,1,1,1",
+        "INSTR:DR? 0": "15,15,15,15",
+        "INSTR:MODE? 0": "1,1,1,1"
+      },
+      "measurement_samples_volts": [
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ],
+        [
+          3.7312,
+          0.0026,
+          -0.0015,
+          0.0001
+        ]
+      ],
+      "measurement_mean_volts": [
+        3.7312,
+        0.0026,
+        -0.0015,
+        0.0001
+      ],
+      "error_queue": "0,\"No error\"",
+      "settings_readback_preserved": true,
+      "passed": true
+    }
+  ],
+  "unit0001_migration": {
+    "from": "V1.0.2",
+    "to": "V5.0.0",
+    "serial_provisioned": "0001",
+    "calibration_source": "Pre-update stored CAL readback, five decimal places",
+    "calibration_restoration": "Computed equivalent two-point coefficients, saved, verified after *RST and repeat firmware upload",
+    "precision_limit": "Original internal precision beyond the legacy five-place coefficient readback could not be retained; no external-reference recalibration performed",
+    "address_preserved": true
+  },
+  "upload_records": [
+    "20261122T225315Z",
+    "20261122T225340Z",
+    "20261122T225439Z"
+  ],
+  "authorization": "User explicitly authorized updating both units; unit0001 is no longer in use by the other agent",
+  "validation": "Local USB queries only; no RS485 commands sent or external-reference accuracy test performed"
+}

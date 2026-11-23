@@ -7,12 +7,14 @@ import serial
 from pathlib import Path
 
 from device_snapshot import identify
+from scpi_errors import expect_error
 
 
 def run(args):
     connection, descriptor, identity = identify(args.port, args.serial, args.usb_serial)
     results = []
     with connection:
+        connection.write(b"*CLS\n")
         healthy = True
         def query(command):
             nonlocal healthy
@@ -33,21 +35,21 @@ def run(args):
             results.append(name)
             print(f"PASS {name}", flush=True)
 
-        calibration = query("CAL 0?")
+        calibration = query("CAL? 0")
         address = query("INSTR:RS485?")
-        if identity.split(",")[3] != "V2.1.3":
-            raise RuntimeError(f"Expected V2.1.3 before regression testing: {identity}")
+        if identity.split(",")[3] != "V5.0.0":
+            raise RuntimeError(f"Expected V5.0.0 before regression testing: {identity}")
         try:
-            check("four voltage measurements", len([float(v) for v in query("MEAS:VOLT 0?").split(",")]) == 4)
-            for command in ("MEAS:VOLT", "MEAS:VOLT -1?", "MEAS:VOLT 256?", "INSTR:RS485:SET 256"):
-                check(f"reject {command}", query(command) == "ERROR:INVALID ARGUMENTS")
+            check("four voltage measurements", len([float(v) for v in query("MEAS:VOLT? 0").split(",")]) == 4)
+            for command in ("MEAS:VOLT", "MEAS:VOLT? -1", "MEAS:VOLT? 256", "INSTR:RS485:SET 256"):
+                check(f"reject {command}", expect_error(connection, identity, command, (-113, -222)) != 0)
             for size in (63, 64, 65, 127, 128, 191, 192, 199, 200):
-                expected = "ERROR:LINE TOO LONG" if size == 200 else "ERROR:INVALID COMMAND"
+                expected = -363 if size == 200 else -113
                 print(f"Testing {size}-byte input", flush=True)
-                check(f"{size}-byte input", query("X" * size) == expected)
+                check(f"{size}-byte input", expect_error(connection, identity, "X" * size, expected) == expected)
             check("identity after malformed input", query("*IDN?") == identity)
             if not args.skip_large_burst:
-                check("4096-byte discarded frame", query("X" * 4096) == "ERROR:LINE TOO LONG")
+                check("4096-byte discarded frame", expect_error(connection, identity, "X" * 4096, -363) == -363)
                 check("identity after discarded burst", query("*IDN?") == identity)
 
             # A fragment lasting longer than Arduino's former one-second read
@@ -64,24 +66,24 @@ def run(args):
 
             if args.rs485_disconnected:
                 start = time.monotonic()
-                answer = query("MEAS:VOLT 5?")
+                answer = expect_error(connection, identity, "MEAS:VOLT? 5", 1101)
                 elapsed = time.monotonic() - start
-                check("missing RS485 peer times out", answer == "ERROR:RS485 TIMEOUT" and 0.8 <= elapsed < 1.8)
+                check("missing RS485 peer times out", answer == 1101 and 0.8 <= elapsed < 1.8)
                 check("identity after RS485 timeout", query("*IDN?") == identity)
                 for channel, maximum in ((5, 185), (41, 184)):
-                    command = f"MEAS:VOLT {channel}?"
+                    command = f"MEAS:VOLT? {channel}"
                     padded = command + " " * (maximum - len(command))
-                    check(f"forwarding boundary accepted for CH{channel}", query(padded) == "ERROR:RS485 TIMEOUT")
-                    check(f"forwarding boundary rejected for CH{channel}", query(padded + " ") == "ERROR:LINE TOO LONG")
+                    check(f"forwarding boundary accepted for CH{channel}", expect_error(connection, identity, padded, 1101) == 1101)
+                    check(f"forwarding boundary rejected for CH{channel}", expect_error(connection, identity, padded + " ", -363) == -363)
                 for channel in (1, 5):
                     check(f"calibration overflow rejected for CH{channel}",
-                          query(f"CAL:VOLT {channel},0,0,1e30,1e-30") == "ERROR:INVALID ARGUMENTS")
+                          expect_error(connection, identity, f"CAL:VOLT {channel},0,0,1e30,1e-30", -222) == -222)
         finally:
             if healthy:
                 connection.write(b"*RST\n")
                 connection.flush()
                 time.sleep(0.15)
-        check("calibration preserved", query("CAL 0?") == calibration)
+        check("calibration preserved", query("CAL? 0") == calibration)
         check("address preserved", query("INSTR:RS485?") == address)
         check("identity after reset", query("*IDN?") == identity)
     report = {

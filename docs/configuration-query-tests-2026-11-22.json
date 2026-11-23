@@ -1,0 +1,68 @@
+{
+  "time_utc": "2026-11-22T18:04:30.007573+00:00",
+  "passed": true,
+  "version": "V3.2.0",
+  "scope": [
+    "INSTR:GAIN? <channel>",
+    "INSTR:DR? <channel>",
+    "INSTR:MODE? <channel>"
+  ],
+  "target": {
+    "serial": "0003",
+    "usb_uid": "4977386D3659",
+    "port": "COM10",
+    "hub": "1-10.4.1.1.1.4",
+    "unit0001": "untouched"
+  },
+  "firmware": {
+    "bytes": 43364,
+    "sha256": "4f218f07e7e7359c8dcd563dcaedf55923c4af8cc5a1e02a40a25e9d335436a7",
+    "free_application_bytes": 11932,
+    "ram_link_allocation_with_reservations": 8664,
+    "previous_bytes": 43020,
+    "settings_format_changed": false
+  },
+  "host": {
+    "application_groups": 44,
+    "service_groups": 17,
+    "portable_scpi_groups": 14,
+    "cdc_groups": 3,
+    "reset_checks": 4,
+    "numeric_cases": 16,
+    "standalone_C_example": true,
+    "python_tests": 21,
+    "passed": true
+  },
+  "hardware": {
+    "configuration_checks": 493,
+    "gain_rate_mode_combinations": 24,
+    "channels": 4,
+    "packet_checks": 280,
+    "initial_and_repeat_hub_upload_passed": true,
+    "serial_calibration_address_preserved": true,
+    "readback_after_repeat_upload": {
+      "INSTR:GAIN? 0": "1,1,1,1",
+      "INSTR:DR? 0": "15,15,15,15",
+      "INSTR:MODE? 0": "1,1,1,1"
+    },
+    "final_snapshot": {
+      "time_utc": "2026-11-22T18:03:15.977297+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V3.2.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL 0?": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT 0?": "0.0000,0.0000,0.0000,0.0004",
+        "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0002"
+      }
+    }
+  },
+  "limits": [
+    "Hardware RS485 disconnected: addressed peer replies verified in host tests; real missing-peer timeout tested",
+    "Hardware I2C failure and unsupported configuration faults modeled in host tests"
+  ],
+  "evidence_folder": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_Configuration_Queries"
+}

@@ -1,0 +1,6 @@
+{
+  "cmake.cmakePath": "${workspaceFolder}/.venv/Scripts/cmake.exe",
+  "cmake.environment": {"PATH": "${workspaceFolder}/.venv/Scripts;${env:PATH}"},
+  "cmake.useCMakePresets": "always",
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}

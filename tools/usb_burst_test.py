@@ -5,6 +5,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from device_snapshot import identify
+from scpi_errors import expect_error
 
 
 def run(args):
@@ -16,13 +17,10 @@ def run(args):
     sizes = (1, 31, 32, 63, 64, 65, 127, 128, 191, 192, 198, 199, 200, 201, 4095, 4096, 4097, 8192)
     started = time.monotonic()
     with connection:
+        connection.write(b"*CLS\n")
         for cycle in range(args.cycles):
             for size in sizes:
-                connection.write(b"X" * size + b"\n")
-                reply = connection.readline().decode("ascii").strip()
-                expected = "ERROR:LINE TOO LONG" if size >= 200 else "ERROR:INVALID COMMAND" if size >= 32 else "ERROR:INVALID ARGUMENTS"
-                if reply != expected:
-                    raise RuntimeError(f"cycle{cycle}, size{size}: {reply!r} != {expected!r}")
+                expect_error(connection, identity, b"X" * size, -363 if size >= 200 else -113)
                 checks += 1
             print(f"PASS packet cycle {cycle + 1}", flush=True)
         connection.write(b"*IDN?\n" * 100)
@@ -31,7 +29,7 @@ def run(args):
                 raise RuntimeError("Coalesced identity commands lost framing")
             checks += 1
         print("PASS 100 coalesced commands", flush=True)
-        connection.write(b"CAL 0?\n")
+        connection.write(b"CAL? 0\n")
         calibration = connection.readline().decode("ascii").strip()
         connection.write(b"INSTR:RS485?\n")
         address = connection.readline().decode("ascii").strip()

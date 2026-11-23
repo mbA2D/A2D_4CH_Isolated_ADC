@@ -2,11 +2,16 @@
 #define A2D_FLASH_H
 #include <stdint.h>
 #include <stddef.h>
-namespace a2d {
-// Two 1KiB pages, outside the bootloader and application. Each save targets the inactive page.
-constexpr uint32_t SettingsFlashBase = 0x0800f800UL;
-constexpr size_t SettingsPageSize = 1024;
-void readSettingsPage(uint8_t page, void *data, size_t size);
-bool writeSettingsPage(uint8_t page, const void *data, size_t size);
+#include <stdbool.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+#define A2D_SETTINGS_FLASH_BASE 0x0800F800UL
+#define A2D_SETTINGS_PAGE_SIZE 1024U
+void a2d_flash_read_page(uint8_t page, void *data, size_t size);
+bool a2d_flash_write_page(uint8_t page, const void *data, size_t size);
+
+#ifdef __cplusplus
 }
+#endif
 #endif

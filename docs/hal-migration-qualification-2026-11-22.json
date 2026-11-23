@@ -1,0 +1,146 @@
+{
+  "time_utc": "2026-11-22T15:20:28.195668+00:00",
+  "passed": true,
+  "version": "V3.0.0",
+  "branch": "stm32-hal-migration",
+  "published": false,
+  "target": {
+    "instrument_serial": "0003",
+    "usb_uid": "4977386D3659",
+    "port": "COM10",
+    "hub": "1-10.4.1.1.1.4",
+    "unit_0001": "not opened or programmed"
+  },
+  "firmware": {
+    "bytes": 41908,
+    "sha256": "ffc9ee0c396954d76d8e43e4cc9afecd040495c39412386880145dab0341dd29",
+    "application_start": "0x08002000",
+    "settings_start": "0x0800F800",
+    "app_budget": 55296,
+    "free_bytes": 13388,
+    "compiler": "standalone GNU Arm 10.3.1",
+    "arduino_identity_checkpoint_bytes": 55280,
+    "gcc12_comparison_bytes": 41572,
+    "common_image_has_no_compiled_0003": true
+  },
+  "host": {
+    "application_groups": 29,
+    "service_groups": 14,
+    "cdc_backend_groups": 3,
+    "boot_request_checks": 4,
+    "portable_scpi_groups": 10,
+    "copied_package_example": true,
+    "python_tests": 18,
+    "all_passed": true,
+    "standalone_rebuild_sha256": "ffc9ee0c396954d76d8e43e4cc9afecd040495c39412386880145dab0341dd29"
+  },
+  "hardware": {
+    "initial_hal_before_descriptor_correction": {
+      "sha256": "17460f8b56c89b11ead56831af046f1f848dfaf0f95a2b2992601f46295b80a3",
+      "ranges": 164,
+      "fuzz": {
+        "tx_bytes": 35663083,
+        "replies": 97006,
+        "canary_checks": 3127,
+        "malformed_or_blank_frames": 100000
+      },
+      "soak_seconds": 600.078,
+      "soak": {
+        "tx_bytes": 28321035,
+        "replies": 24553,
+        "canary_checks": 1721,
+        "measurement_vectors": 20666,
+        "state_cycles": 10333,
+        "discarded_64k_frames": 414,
+        "backpressure_rounds": 12,
+        "unread_identity_requests": 60000
+      }
+    },
+    "final_hal": {
+      "command_checks": 34,
+      "packet_checks": 280,
+      "session_checks": 315,
+      "persistent_identity_checks": 33,
+      "persistence_checks": 23,
+      "measurement_checks": 10,
+      "fuzz": {
+        "tx_bytes": 35269050,
+        "replies": 96965,
+        "canary_checks": 3127,
+        "malformed_or_blank_frames": 100000
+      },
+      "soak_seconds": 60.113,
+      "soak": {
+        "tx_bytes": 2866691,
+        "replies": 2499,
+        "canary_checks": 177,
+        "measurement_vectors": 2094,
+        "state_cycles": 1047,
+        "discarded_64k_frames": 42,
+        "backpressure_rounds": 1,
+        "unread_identity_requests": 5000
+      },
+      "nondefault_settings_preserved_across_usb_update": true,
+      "repeat_hub_updates_passed": true
+    },
+    "measurements": [
+      {
+        "channel": 1,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 2,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 3,
+        "count": 60,
+        "mean_volts": 0.0,
+        "min_volts": 0.0,
+        "max_volts": 0.0,
+        "stddev_volts": 0.0,
+        "mean_raw_volts": 0.0
+      },
+      {
+        "channel": 4,
+        "count": 60,
+        "mean_volts": 0.00044333333333333334,
+        "min_volts": 0.0004,
+        "max_volts": 0.0005,
+        "stddev_volts": 4.955356249106168e-05,
+        "mean_raw_volts": 0.00014000000000000001
+      }
+    ],
+    "final_snapshot": {
+      "time_utc": "2026-11-22T15:20:28.062184+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V3.0.0",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL 0?": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT 0?": "0.0000,0.0000,0.0000,0.0005",
+        "MEAS:VOLT:ADC 0?": "0.0000,0.0000,0.0000,0.0002"
+      }
+    }
+  },
+  "limitations": [
+    "Inputs unconnected; no reference accuracy claim",
+    "RS485 disconnected; no second physical peer tested",
+    "No manufacturing SWD or actual update power-interruption test",
+    "No cross-PC driver qualification",
+    "Maple bootloader retained; no new recovery/signing/rollback features"
+  ],
+  "raw_evidence_folder": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_Identity_HAL"
+}

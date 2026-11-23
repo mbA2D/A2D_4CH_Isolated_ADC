@@ -1,0 +1,7 @@
+{
+  "port": "COM_TARGET",
+  "serial": "NNNN",
+  "usb_serial": "TARGET_USB_UID",
+  "dfu_util": "C:/Tools/dfu-modern/dfu-util.exe",
+  "maple_dfu_util": "C:/Tools/dfu-maple/dfu-util.exe"
+}

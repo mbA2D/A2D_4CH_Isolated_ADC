@@ -17,6 +17,7 @@ import traceback
 
 import serial
 from device_snapshot import identify
+from scpi_errors import expect_error, parse_error
 
 
 class Rig:
@@ -32,7 +33,8 @@ class Rig:
         self.trace = deque(maxlen=40)
         self.c.timeout = 0.1
         self.counts = Counter()
-        self.baseline_cal = self.query("CAL 0?")
+        self.command("*CLS")
+        self.baseline_cal = self.query("CAL? 0")
         self.baseline_address = self.query("INSTR:RS485?")
         self.address = "7"
         self.marker = "0.12500,2.75000"
@@ -63,6 +65,8 @@ class Rig:
         return text
 
     def query(self, command, expected=None):
+        if isinstance(expected, (int, tuple)):
+            return expect_error(self.c, self.identity, command, expected, send=self.send, receive=self.receive)
         self.send(command.encode("ascii") + b"\n")
         result = self.receive()
         if expected is not None and result != expected:
@@ -81,7 +85,7 @@ class Rig:
 
     def check_canaries(self):
         self.query("INSTR:RS485?", self.address)
-        self.query("CAL 0?", self.marker_all)
+        self.query("CAL? 0", self.marker_all)
         self.counts["canary_checks"] += 1
 
     def vector(self, command):
@@ -99,8 +103,8 @@ class Rig:
         self.send(f"INSTR:GAIN {gain},0\nINSTR:DR {rate},0\nINSTR:MODE {mode},0\n".encode())
         if mode == 0:
             self.send(b"*TRG\n")
-        raw = self.vector("MEAS:VOLT:ADC 0?")
-        calibrated = self.vector("MEAS:VOLT 0?")
+        raw = self.vector("MEAS:VOLT:ADC? 0")
+        calibrated = self.vector("MEAS:VOLT? 0")
         # Inputs are unconnected; allow output quantization and intervening noise.
         if abs(calibrated[0] - (raw[0] - 0.125) * 2.75) > 0.002:
             raise RuntimeError("Calibration/configuration state mismatch")
@@ -136,18 +140,17 @@ class Rig:
         self.report.setdefault("backpressure_writes_completed", []).append(completed)
 
     def targeted(self):
-        self.query("CAL:VOLT 1,0,0,1e20,1", "ERROR:INVALID ARGUMENTS")
+        self.query("CAL:VOLT 1,0,0,1e20,1", (-102, -113, -128, -222, -224))
         self.check_canaries()
-        self.query("CAL:VOLT 1,0,1,1e20,2", "ERROR:INVALID ARGUMENTS")
+        self.query("CAL:VOLT 1,0,1,1e20,2", (-102, -113, -128, -222, -224))
         self.check_canaries()
         for payload in (b"1EAF\n", b"1EAF_NOT_A_RESET\n", b"1EAF" + b"X" * 60 + b"\n"):
             for _ in range(3):
                 self.c.dtr = False
                 self.c.dtr = True
             self.send(payload)
-            expected = "ERROR:INVALID COMMAND" if len(payload) > 32 else "ERROR:INVALID ARGUMENTS"
-            if self.receive() != expected:
-                raise RuntimeError("Malformed bootloader-prefix input was not rejected")
+            expected = -113 if len(payload) > 32 else (-102, -113, -128, -222, -224)
+            self.query("", expected)
             self.query("*IDN?", self.identity)
             self.check_canaries()
         self.counts["targeted_regressions"] = 5
@@ -162,38 +165,42 @@ class Rig:
             batch, expected = [], []
             for _ in range(min(32, count - first)):
                 category = rng.randrange(8)
-                response = "ERROR:INVALID ARGUMENTS"
+                response = (-102, -113, -128, -222, -224)
                 if category == 0:
                     payload = rng.choice(setters) + b"?" + rng.choice((b"", b" \t\r"))
                 elif category == 1:
                     payload = rng.choice(integer_commands) % rng.choice(bad_numbers)
                 elif category == 2:
-                    payload = b"MEAS:VOLT " + rng.choice((b"-1", b"129", b"999999999999999999")) + b"?"
+                    payload = b"MEAS:VOLT? " + rng.choice((b"-1", b"129", b"999999999999999999"))
                 elif category == 3:
                     payload = rng.choice(setters + [b"*IDN?", b"*RST", b"*TRG"]) + b" EXTRA"
                 elif category == 4:
                     payload = rng.choice(setters) + b"\0" + bytes(rng.choice((0, 13, 32, 63, 127, 255)) for _ in range(rng.randrange(80)))
-                    response = "ERROR:LINE TOO LONG"
+                    response = -363
                 elif category == 5:
                     payload = b"CAL:SAVE 0 " + b"X" * (rng.choice((200, 201, 256, 4096, 8192)) - 11)
-                    response = "ERROR:LINE TOO LONG"
+                    response = -363
                 elif category == 6:
                     size = rng.choice((1, 31, 32, 63, 64, 65, 127, 128, 198, 199))
                     payload = b"X" * size
-                    response = "ERROR:INVALID COMMAND" if size >= 32 else response
+                    response = -113 if size >= 32 else response
                 else:
                     payload = rng.choice((b"", b" \t\r", b"\r"))
                     response = None
-                batch.append(payload + b"\n")
-                if response is not None:
-                    expected.append(response)
+                batch.append(payload + b"\n*IDN?\nSYST:ERR?\n")
+                expected.append(self.identity)
+                expected.append(0 if response is None else response)
                 self.counts["malformed_or_blank_frames"] += 1
             batch.append(b"*IDN?\n")
             expected.append(self.identity)
             self.send(b"".join(batch))
             for value in expected:
                 actual = self.receive()
-                if actual != value:
+                if isinstance(value, (int, tuple)):
+                    allowed = (value,) if isinstance(value, int) else value
+                    if parse_error(actual)[0] not in allowed:
+                        raise RuntimeError(f"Fuzz batch {first}: {actual!r} != {value!r}")
+                elif actual != value:
                     raise RuntimeError(f"Fuzz batch {first}: {actual!r} != {value!r}")
             self.check_canaries()
             if time.monotonic() >= next_progress:
@@ -209,8 +216,7 @@ class Rig:
             self.state_cycle(index)
             if index % 25 == 0:
                 self.send(b"X" * 65536 + b"\n")
-                if self.receive() != "ERROR:LINE TOO LONG":
-                    raise RuntimeError("64KiB frame did not recover")
+                self.query("", -363)
                 self.counts["discarded_64k_frames"] += 1
                 self.check_canaries()
             if time.monotonic() >= next_pressure:
@@ -224,7 +230,7 @@ class Rig:
 
     def restore(self):
         self.command("*RST")
-        self.query("CAL 0?", self.baseline_cal)
+        self.query("CAL? 0", self.baseline_cal)
         self.query("INSTR:RS485?", self.baseline_address)
 
     def reconnect(self, cycles):
@@ -289,7 +295,7 @@ def run(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", required=True)
-    parser.add_argument("--version", default="V2.1.3")
+    parser.add_argument("--version", default="V5.0.0")
     parser.add_argument("--phase", choices=("targeted", "fuzz", "state", "reconnect", "soak"), required=True)
     parser.add_argument("--seed", type=int, default=2605)
     parser.add_argument("--cases", type=int, default=20000)

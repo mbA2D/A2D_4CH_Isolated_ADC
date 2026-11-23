@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "configurePresets": [{
+    "name": "release", "displayName": "STM32F103 HAL / Maple USB",
+    "generator": "Ninja", "binaryDir": "${sourceDir}/build/release",
+    "toolchainFile": "${sourceDir}/cmake/arm-gcc.cmake",
+    "cacheVariables": {"CMAKE_BUILD_TYPE": "MinSizeRel"}
+  }],
+  "buildPresets": [{"name": "release", "configurePreset": "release"}]
+}

@@ -36,21 +36,20 @@ def run(args):
             rig.send(prefix + b'1EAF')
             time.sleep(0.02)
             rig.send(b'_NOT_A_RESET\n')
-            expected = 'ERROR:LINE TOO LONG' if prefix else 'ERROR:INVALID ARGUMENTS'
-            if rig.receive() != expected:
-                raise RuntimeError('Fragmented legacy reset token was not rejected')
+            expected = -363 if prefix else (-102, -113)
+            rig.query("", expected)
             rig.check_canaries()
             report['checks'].append('fragmented legacy reset token rejected, prefix bytes=' + str(len(prefix)))
         for line in ('SYST:BOOT?', 'SYST:BOOT 1', 'SYST:BOOT EXTRA', 'SYST:BOOT;*IDN?',
                      'SYST:BOOT\x00', 'SYST:BOOT' + ' ' * 200):
-            expected = 'ERROR:LINE TOO LONG' if '\x00' in line or len(line) > 199 else 'ERROR:INVALID ARGUMENTS'
+            expected = -363 if '\x00' in line or len(line) > 199 else (-102, -113)
             rig.query(line, expected)
             rig.check_canaries()
             report['checks'].append('rejected malformed boot command: ' + repr(line))
 
-        cases = ((b'INSTR:RS485:SET 3', b'1\n', 'ERROR:INVALID ARGUMENTS'),
+        cases = ((b'INSTR:RS485:SET 3', b'1\n', (-102, -113)),
                  (b'X' * 200, b'*IDN?\n', rig.identity),
-                 (b'SYST:BO', b'OT\n', 'ERROR:INVALID ARGUMENTS'))
+                 (b'SYST:BO', b'OT\n', (-102, -113)))
         for index in range(args.cycles):
             for prefix, tail, expected in cases:
                 rig.send(prefix)
@@ -66,7 +65,9 @@ def run(args):
                 else:
                     rig.c.dtr = True
                 rig.send(tail)
-                if rig.receive() != expected:
+                if isinstance(expected, tuple):
+                    rig.query("", expected)
+                elif rig.receive() != expected:
                     raise RuntimeError(f'Stale frame across {mode}, cycle{index}')
                 rig.check_canaries()
                 report['checks'].append(f'partial/overflow command discarded across {mode}, cycle{index}, prefix bytes{len(prefix)}')
@@ -89,7 +90,7 @@ def run(args):
         rig.command('INSTR:RS485:SET 0')
         rig.address = '0'
         for mode in ('dtr', 'close', 'explicit_close'):
-            rig.send(b'MEAS:VOLT 5?\nINSTR:RS485:SET 31\n')
+            rig.send(b'MEAS:VOLT? 5\nINSTR:RS485:SET 31\n')
             time.sleep(0.05)
             if mode != 'close':
                 rig.c.dtr = False
@@ -108,7 +109,7 @@ def run(args):
             if rig.buffer or rig.c.in_waiting:
                 raise RuntimeError('Old forwarding timeout/reply reached the new session')
             report['checks'].append(f'old forward and queued setter cancelled across {mode}, fresh reply in{elapsed:.3f}s')
-        rig.query('MEAS:VOLT 5?', 'ERROR:RS485 TIMEOUT')
+        rig.query('MEAS:VOLT? 5', 1101)
         rig.check_canaries()
         report['checks'].append('new forwarding still works after cancellation')
 
@@ -148,7 +149,7 @@ def run(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', required=True)
-    parser.add_argument('--version', default='V2.1.3')
+    parser.add_argument('--version', default='V5.0.0')
     parser.add_argument('--cycles', type=int, default=36)
     parser.add_argument('--output', type=Path, required=True)
     run(parser.parse_args())

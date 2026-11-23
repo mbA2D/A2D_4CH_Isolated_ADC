@@ -5,13 +5,14 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from device_snapshot import identify
+from scpi_errors import expect_error
 
 
 def run(args):
     connection, descriptor, identity = identify(args.port, "0003", "4977386D3659")
-    if descriptor.location != "1-10.4.1.1.1.4" or identity.split(",")[-1] != "V2.1.3":
+    if descriptor.location != "1-10.4.1.1.1.4" or identity.split(",")[-1] != "V5.0.0":
         connection.close()
-        raise RuntimeError("Expected V2.1.3 on unit0003 through the original hub")
+        raise RuntimeError("Expected V5.0.0 on unit0003 through the original hub")
     checks = []
     def check(name, condition):
         if not condition:
@@ -20,6 +21,7 @@ def run(args):
         print("PASS " + name, flush=True)
     factory = ",".join(["0.00000,2.81818"] * 4)
     with connection:
+        connection.write(b"*CLS\n")
         def query(text):
             connection.write((text + "\n").encode("ascii"))
             reply = connection.readline().decode("ascii").strip()
@@ -29,19 +31,19 @@ def run(args):
         def command(text):
             connection.write((text + "\n").encode("ascii"))
             check("completed " + text, query("*IDN?") == identity)
-        check("nominal V2 calibration before persistence test", query("CAL 0?") == factory)
+        check("nominal V2 calibration before persistence test", query("CAL? 0") == factory)
         check("base address before persistence test", query("INSTR:RS485?") == "0")
         try:
             command("CAL:VOLT 1,0,-0.125,2.75,0.875")
-            check("RAM calibration applied", query("CAL 1?") == "-0.12500,2.75000")
-            check("reset query rejected", query("CAL:RESET 1?") == "ERROR:INVALID ARGUMENTS")
-            check("calibration unchanged by rejected query", query("CAL 1?") == "-0.12500,2.75000")
-            check("save query rejected", query("CAL:SAVE 0?") == "ERROR:INVALID ARGUMENTS")
-            check("address query on setter rejected", query("INSTR:RS485:SET 7?") == "ERROR:INVALID ARGUMENTS")
+            check("RAM calibration applied", query("CAL? 1") == "-0.12500,2.75000")
+            check("reset query rejected", expect_error(connection, identity, "CAL:RESET 1?", -102) == -102)
+            check("calibration unchanged by rejected query", query("CAL? 1") == "-0.12500,2.75000")
+            check("save query rejected", expect_error(connection, identity, "CAL:SAVE 0?", -102) == -102)
+            check("address query on setter rejected", expect_error(connection, identity, "INSTR:RS485:SET 7?", -102) == -102)
             check("address unchanged by rejected query", query("INSTR:RS485?") == "0")
             command("CAL:SAVE 1")
             command("*RST")
-            check("calibration persisted after reset", query("CAL 1?") == "-0.12500,2.75000")
+            check("calibration persisted after reset", query("CAL? 1") == "-0.12500,2.75000")
             command("INSTR:RS485:SET 7")
             command("INSTR:RS485:SAVE")
             command("*RST")
@@ -53,7 +55,7 @@ def run(args):
             command("INSTR:RS485:SET 0")
             command("INSTR:RS485:SAVE")
             command("*RST")
-        check("nominal calibration restored and persisted", query("CAL 0?") == factory)
+        check("nominal calibration restored and persisted", query("CAL? 0") == factory)
         check("base address restored and persisted", query("INSTR:RS485?") == "0")
     report = {"time_utc": datetime.now(timezone.utc).isoformat(), "identity": identity,
               "usb_serial": descriptor.serial_number, "usb_location": descriptor.location,

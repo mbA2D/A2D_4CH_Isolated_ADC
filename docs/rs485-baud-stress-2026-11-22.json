@@ -1,0 +1,879 @@
+{
+  "generated_utc": "2026-11-23T02:37:23.552039+00:00",
+  "complete": true,
+  "production_rate_passed": true,
+  "all_tested_rates_passed": false,
+  "conditions": {
+    "cable": "One twisted pair removed from UTP CAT5e cable",
+    "approx_length_m": 0.5,
+    "termination": "Enabled at both ends, user confirmed",
+    "USB": "Both units on shared hub",
+    "test_units": [
+      "0001",
+      "0003"
+    ],
+    "restore_addresses": {
+      "0001": 0,
+      "0003": 0
+    },
+    "standard_version": "V5.0.0",
+    "phases": {
+      "baseline_active_seconds": 900,
+      "per_rate_sweep_active_seconds": 60,
+      "final_soak_active_seconds": 1800
+    },
+    "software_device_limit": 32,
+    "software_device_limit_includes_master": true,
+    "software_channel_limit": 128,
+    "physical_devices_in_test": 2,
+    "MAX3485_datasheet_rate_limit_bps": 10000000,
+    "capacity_qualification": "Two-node bench link only. Address31 checks do not simulate a loaded32-node bus.",
+    "node_scaling_notes": "More receivers and stubs add electrical load; full scans serialize requests and grow with device count."
+  },
+  "standard_firmware_sha256": "10bd9c9fddc0aaba833d4808af189d25a8f1b8f3ea1e5bc8dfe5c5de915d5806",
+  "baseline": {
+    "time_utc": "2026-11-23T00:26:11.523455+00:00",
+    "version": "V5.0.0",
+    "baud": 57600,
+    "requested_active_seconds": 900.0,
+    "passed": true,
+    "restored": true,
+    "seconds": 900.495,
+    "counts": {
+      "USB_query_replies": 89997,
+      "canary_rounds": 494,
+      "forwarded_queries": 70534,
+      "maximum_forwarded_payloads": 7592,
+      "ordered_burst_replies": 15128,
+      "USB_RS485_concurrency_rounds": 1891,
+      "checked_forwarded_setters": 948,
+      "missing_peer_recoveries": 14,
+      "master_session_recoveries": 10,
+      "peer_USB_backpressure_rounds": 6,
+      "address31_rounds": 8
+    },
+    "directions": [
+      {
+        "master": "0003",
+        "peer": "0001",
+        "active_seconds": 450.022,
+        "loops": 31501
+      },
+      {
+        "master": "0001",
+        "peer": "0003",
+        "active_seconds": 450.028,
+        "loops": 28976
+      }
+    ],
+    "trace_sha256": "8018fdff6ef7daeccba0c77f6a6b0229c41c3c900895fa6171a473ca5739e2e4",
+    "trace_records": 73982,
+    "latency_ms": {
+      "median": 8.862,
+      "max": 42.89
+    }
+  },
+  "rates": [
+    {
+      "baud": 9600,
+      "adaptive_timeout": false,
+      "version": "V5.90.9600",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.9600\\firmware.bin",
+      "bytes": 43892,
+      "sha256": "d417e012f80ef02cb7a4a21f8725c48dab7caa84e34be21f8df325c38c341f6a",
+      "outcome": "Expected transmit-timeout failure reproduced",
+      "diagnostic": {
+        "baud": 9600,
+        "version": "V5.90.9600",
+        "expected_limitation": "100ms UART timeout on a 200-byte frame",
+        "limitation_reproduced": true,
+        "restored": true,
+        "observed": "Unit0001: 'INSTR:GAIN? 5                                                                                                                                                                            ' failed; queued 1102,\"RS485 write failed\"",
+        "wire_frame_bytes": 200,
+        "wire_time_ms": 208.33333333333334
+      }
+    },
+    {
+      "baud": 19200,
+      "adaptive_timeout": false,
+      "version": "V5.90.19200",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.19200\\firmware.bin",
+      "bytes": 43892,
+      "sha256": "07825c4857f5fc38356e5f3e86860c5f51b07235762b5f5a8e9d1573d87efbd1",
+      "outcome": "Expected transmit-timeout failure reproduced",
+      "diagnostic": {
+        "baud": 19200,
+        "version": "V5.90.19200",
+        "expected_limitation": "100ms UART timeout on a 200-byte frame",
+        "limitation_reproduced": true,
+        "restored": true,
+        "observed": "Unit0001: 'INSTR:GAIN? 5                                                                                                                                                                            ' failed; queued 1102,\"RS485 write failed\"",
+        "wire_frame_bytes": 200,
+        "wire_time_ms": 104.16666666666667
+      }
+    },
+    {
+      "baud": 9600,
+      "adaptive_timeout": true,
+      "version": "V5.91.9600",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.91.9600\\firmware.bin",
+      "bytes": 43940,
+      "sha256": "a63018f0f7adc133d603daede9e424c7cb85aeddd7156fb4be4dfe529f0cbcb5",
+      "passed": true,
+      "outcome": "PASS",
+      "functional": {
+        "time_utc": "2026-11-23T00:41:46.991179+00:00",
+        "passed": true,
+        "restored": true,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "seconds": 28.582,
+        "counts": {
+          "USB_query_replies": 1314,
+          "forwarded_queries": 466,
+          "remote_USB_comparisons": 218,
+          "forwarded_setter_checks": 72,
+          "ordered_burst_replies": 96,
+          "simultaneous_USB_RS485_rounds": 200,
+          "highest_address_channel_checks": 48
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "address": 1,
+            "readings": {
+              "1": -0.0013,
+              "2": 0.0028,
+              "3": -0.0015,
+              "4": 0.0003
+            },
+            "missing_peer_seconds": 1.027
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "address": 1,
+            "readings": {
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0004
+            },
+            "missing_peer_seconds": 1.03
+          }
+        ],
+        "forwarded_query_latency_ms": {
+          "median": 47.151,
+          "maximum": 99.505
+        }
+      },
+      "stress": {
+        "time_utc": "2026-11-23T00:42:15.891478+00:00",
+        "version": "V5.91.9600",
+        "baud": 9600,
+        "requested_active_seconds": 60.0,
+        "passed": true,
+        "restored": true,
+        "seconds": 61.184,
+        "counts": {
+          "USB_query_replies": 1374,
+          "canary_rounds": 14,
+          "forwarded_queries": 831,
+          "maximum_forwarded_payloads": 94,
+          "ordered_burst_replies": 184,
+          "USB_RS485_concurrency_rounds": 23,
+          "checked_forwarded_setters": 12,
+          "missing_peer_recoveries": 2,
+          "master_session_recoveries": 2,
+          "peer_USB_backpressure_rounds": 2,
+          "peer_USB_writes_backpressured": 2,
+          "address31_rounds": 2
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "active_seconds": 30.296,
+            "loops": 353,
+            "forwarded_queries": 434
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "active_seconds": 30.396,
+            "loops": 321,
+            "forwarded_queries": 397
+          }
+        ],
+        "trace_sha256": "58cdc1ad4e6e90463b953006ea4a64877fd9889fa327c6b38f6edba623d84833",
+        "trace_records": 1243,
+        "latency_ms": {
+          "median": 47.279,
+          "max": 242.266
+        }
+      }
+    },
+    {
+      "baud": 19200,
+      "adaptive_timeout": true,
+      "version": "V5.91.19200",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.91.19200\\firmware.bin",
+      "bytes": 43940,
+      "sha256": "2241a3a7a7ac23d1cd39d7d906abf0a980349a3656cc70fdecdf900207139875",
+      "passed": true,
+      "outcome": "PASS",
+      "functional": {
+        "time_utc": "2026-11-23T00:43:27.095511+00:00",
+        "passed": true,
+        "restored": true,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "seconds": 17.439,
+        "counts": {
+          "USB_query_replies": 1314,
+          "forwarded_queries": 466,
+          "remote_USB_comparisons": 218,
+          "forwarded_setter_checks": 72,
+          "ordered_burst_replies": 96,
+          "simultaneous_USB_RS485_rounds": 200,
+          "highest_address_channel_checks": 48
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "address": 1,
+            "readings": {
+              "1": -0.0013,
+              "2": 0.0028,
+              "3": -0.0015,
+              "4": 0.0003
+            },
+            "missing_peer_seconds": 1.014
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "address": 1,
+            "readings": {
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0004
+            },
+            "missing_peer_seconds": 1.016
+          }
+        ],
+        "forwarded_query_latency_ms": {
+          "median": 24.176,
+          "maximum": 74.64
+        }
+      },
+      "stress": {
+        "time_utc": "2026-11-23T00:43:44.862561+00:00",
+        "version": "V5.91.19200",
+        "baud": 19200,
+        "requested_active_seconds": 60.0,
+        "passed": true,
+        "restored": true,
+        "seconds": 60.518,
+        "counts": {
+          "USB_query_replies": 2386,
+          "canary_rounds": 20,
+          "forwarded_queries": 1618,
+          "maximum_forwarded_payloads": 178,
+          "ordered_burst_replies": 352,
+          "USB_RS485_concurrency_rounds": 44,
+          "checked_forwarded_setters": 24,
+          "missing_peer_recoveries": 2,
+          "master_session_recoveries": 2,
+          "peer_USB_backpressure_rounds": 2,
+          "peer_USB_writes_backpressured": 2,
+          "address31_rounds": 2
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "active_seconds": 30.033,
+            "loops": 706,
+            "forwarded_queries": 845
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "active_seconds": 30.026,
+            "loops": 644,
+            "forwarded_queries": 773
+          }
+        ],
+        "trace_sha256": "92232f0fbbb081d094fb5ba2e29820a6337a1c8dfd7d7fa1602f8635f465f12c",
+        "trace_records": 2078,
+        "latency_ms": {
+          "median": 24.257,
+          "max": 122.151
+        }
+      }
+    },
+    {
+      "baud": 38400,
+      "adaptive_timeout": false,
+      "version": "V5.90.38400",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.38400\\firmware.bin",
+      "bytes": 43892,
+      "sha256": "99fe8641f141b3fd3239c0f092be375d40348525e98fe8b39ec8a485359c72dd",
+      "passed": true,
+      "outcome": "PASS",
+      "functional": {
+        "time_utc": "2026-11-23T00:44:55.576174+00:00",
+        "passed": true,
+        "restored": true,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "seconds": 11.759,
+        "counts": {
+          "USB_query_replies": 1314,
+          "forwarded_queries": 466,
+          "remote_USB_comparisons": 218,
+          "forwarded_setter_checks": 72,
+          "ordered_burst_replies": 96,
+          "simultaneous_USB_RS485_rounds": 200,
+          "highest_address_channel_checks": 48
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "address": 1,
+            "readings": {
+              "1": -0.0013,
+              "2": 0.0028,
+              "3": -0.0015,
+              "4": 0.0003
+            },
+            "missing_peer_seconds": 1.008
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "address": 1,
+            "readings": {
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0004
+            },
+            "missing_peer_seconds": 1.009
+          }
+        ],
+        "forwarded_query_latency_ms": {
+          "median": 12.604,
+          "maximum": 70.021
+        }
+      },
+      "stress": {
+        "time_utc": "2026-11-23T00:45:07.704122+00:00",
+        "version": "V5.90.38400",
+        "baud": 38400,
+        "requested_active_seconds": 60.0,
+        "passed": true,
+        "restored": true,
+        "seconds": 60.58,
+        "counts": {
+          "USB_query_replies": 4267,
+          "canary_rounds": 29,
+          "forwarded_queries": 3119,
+          "maximum_forwarded_payloads": 340,
+          "ordered_burst_replies": 672,
+          "USB_RS485_concurrency_rounds": 84,
+          "checked_forwarded_setters": 42,
+          "missing_peer_recoveries": 2,
+          "master_session_recoveries": 2,
+          "peer_USB_backpressure_rounds": 2,
+          "peer_USB_writes_backpressured": 2,
+          "address31_rounds": 2
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "active_seconds": 30.05,
+            "loops": 1377,
+            "forwarded_queries": 1626
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "active_seconds": 30.069,
+            "loops": 1265,
+            "forwarded_queries": 1493
+          }
+        ],
+        "trace_sha256": "65fd80da68bc2b8a55095814f6e58b1013a4dee0bd21107dd0938bbba90d96c7",
+        "trace_records": 3617,
+        "latency_ms": {
+          "median": 12.699,
+          "max": 62.431
+        }
+      }
+    },
+    {
+      "baud": 115200,
+      "adaptive_timeout": false,
+      "version": "V5.90.115200",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.115200\\firmware.bin",
+      "bytes": 43892,
+      "sha256": "da8681faf620353274af27c83863422908debef87bcdca26ebc802c891e36e07",
+      "passed": true,
+      "outcome": "PASS",
+      "functional": {
+        "time_utc": "2026-11-23T00:46:18.491702+00:00",
+        "passed": true,
+        "restored": true,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "seconds": 8.462,
+        "counts": {
+          "USB_query_replies": 1314,
+          "forwarded_queries": 466,
+          "remote_USB_comparisons": 218,
+          "forwarded_setter_checks": 72,
+          "ordered_burst_replies": 96,
+          "simultaneous_USB_RS485_rounds": 200,
+          "highest_address_channel_checks": 48
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "address": 1,
+            "readings": {
+              "1": -0.0013,
+              "2": 0.0028,
+              "3": -0.0015,
+              "4": 0.0003
+            },
+            "missing_peer_seconds": 1.004
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "address": 1,
+            "readings": {
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0004
+            },
+            "missing_peer_seconds": 1.004
+          }
+        ],
+        "forwarded_query_latency_ms": {
+          "median": 5.062,
+          "maximum": 67.564
+        }
+      },
+      "stress": {
+        "time_utc": "2026-11-23T00:46:27.254007+00:00",
+        "version": "V5.90.115200",
+        "baud": 115200,
+        "requested_active_seconds": 60.0,
+        "passed": true,
+        "restored": true,
+        "seconds": 60.535,
+        "counts": {
+          "USB_query_replies": 10451,
+          "canary_rounds": 62,
+          "forwarded_queries": 7988,
+          "maximum_forwarded_payloads": 862,
+          "ordered_burst_replies": 1720,
+          "USB_RS485_concurrency_rounds": 215,
+          "checked_forwarded_setters": 108,
+          "missing_peer_recoveries": 2,
+          "master_session_recoveries": 2,
+          "peer_USB_backpressure_rounds": 2,
+          "peer_USB_writes_backpressured": 2,
+          "address31_rounds": 2
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "active_seconds": 30.043,
+            "loops": 3521,
+            "forwarded_queries": 4122
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "active_seconds": 30.025,
+            "loops": 3302,
+            "forwarded_queries": 3866
+          }
+        ],
+        "trace_sha256": "110a3d577aaa5c8c4ca921cda0646bcf9200a539636d6f674922f68fbcdeb389",
+        "trace_records": 8688,
+        "latency_ms": {
+          "median": 5.008,
+          "max": 22.545
+        }
+      }
+    },
+    {
+      "baud": 230400,
+      "adaptive_timeout": false,
+      "version": "V5.90.230400",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.230400\\firmware.bin",
+      "bytes": 43892,
+      "sha256": "5912e5009d3823a2747080b4f03d11f69b0f6450dd9ba762cc748d79ec3a643e",
+      "passed": true,
+      "outcome": "PASS",
+      "functional": {
+        "time_utc": "2026-11-23T00:47:37.909710+00:00",
+        "passed": true,
+        "restored": true,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "seconds": 7.496,
+        "counts": {
+          "USB_query_replies": 1314,
+          "forwarded_queries": 466,
+          "remote_USB_comparisons": 218,
+          "forwarded_setter_checks": 72,
+          "ordered_burst_replies": 96,
+          "simultaneous_USB_RS485_rounds": 200,
+          "highest_address_channel_checks": 48
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "address": 1,
+            "readings": {
+              "1": -0.0013,
+              "2": 0.0028,
+              "3": -0.0015,
+              "4": 0.0003
+            },
+            "missing_peer_seconds": 1.003
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "address": 1,
+            "readings": {
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0004
+            },
+            "missing_peer_seconds": 1.003
+          }
+        ],
+        "forwarded_query_latency_ms": {
+          "median": 3.032,
+          "maximum": 66.816
+        }
+      },
+      "stress": {
+        "time_utc": "2026-11-23T00:47:45.704937+00:00",
+        "version": "V5.90.230400",
+        "baud": 230400,
+        "requested_active_seconds": 60.0,
+        "passed": true,
+        "restored": true,
+        "seconds": 60.53,
+        "counts": {
+          "USB_query_replies": 17009,
+          "canary_rounds": 97,
+          "forwarded_queries": 13156,
+          "maximum_forwarded_payloads": 1418,
+          "ordered_burst_replies": 2824,
+          "USB_RS485_concurrency_rounds": 353,
+          "checked_forwarded_setters": 178,
+          "missing_peer_recoveries": 2,
+          "master_session_recoveries": 2,
+          "peer_USB_backpressure_rounds": 2,
+          "peer_USB_writes_backpressured": 2,
+          "address31_rounds": 2
+        },
+        "directions": [
+          {
+            "master": "0003",
+            "peer": "0001",
+            "active_seconds": 30.024,
+            "loops": 5809,
+            "forwarded_queries": 6783
+          },
+          {
+            "master": "0001",
+            "peer": "0003",
+            "active_seconds": 30.026,
+            "loops": 5457,
+            "forwarded_queries": 6373
+          }
+        ],
+        "trace_sha256": "d588b27d11e8941eb3c99003de64e8f445fe4c98dd4929c1e860192bb5653550",
+        "trace_records": 14074,
+        "latency_ms": {
+          "median": 3.104,
+          "max": 12.645
+        }
+      }
+    },
+    {
+      "baud": 460800,
+      "adaptive_timeout": false,
+      "version": "V5.90.460800",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.460800\\firmware.bin",
+      "bytes": 43892,
+      "sha256": "63602dd2ffdcfe6844b7a9cb52df665b28aa6a19dd8d8a16e44edcd9e0d23412",
+      "passed": false,
+      "outcome": "FAIL",
+      "functional": {
+        "time_utc": "2026-11-23T00:48:56.377803+00:00",
+        "passed": false,
+        "restored": false,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "error": "Unit0003: reply timeout",
+        "restoration_error": "Restoration failed: 0003: Unit0003: unexpected error '1101,\"RS485 timeout\"'; 0001: Write timeout",
+        "seconds": 37.774,
+        "counts": {
+          "USB_query_replies": 487,
+          "forwarded_queries": 163,
+          "remote_USB_comparisons": 84,
+          "forwarded_setter_checks": 36,
+          "ordered_burst_replies": 48,
+          "simultaneous_USB_RS485_rounds": 55
+        },
+        "directions": [],
+        "forwarded_query_latency_ms": {
+          "median": 1.961,
+          "maximum": 66.469
+        }
+      },
+      "stress": null
+    },
+    {
+      "baud": 1000000,
+      "adaptive_timeout": false,
+      "version": "V5.90.1000000",
+      "binary": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_RS485_Baud_Stress\\builds\\V5.90.1000000\\firmware.bin",
+      "bytes": 43884,
+      "sha256": "4c45586ea0921e360541338f0b8d184e1401bed8dfbf9c408971e0db0e51322a",
+      "passed": false,
+      "outcome": "FAIL",
+      "functional": {
+        "time_utc": "2026-11-23T02:06:20.654208+00:00",
+        "passed": false,
+        "restored": false,
+        "cycles_per_direction": 24,
+        "scope": "Real two-board RS485 link over the shared USB hub; restore original addresses/settings",
+        "error": "Unit0003: reply timeout",
+        "restoration_error": "Restoration failed: 0003: Unit0003: unexpected error '1101,\"RS485 timeout\"'",
+        "seconds": 3.575,
+        "counts": {
+          "USB_query_replies": 385,
+          "forwarded_queries": 108,
+          "remote_USB_comparisons": 84,
+          "forwarded_setter_checks": 36,
+          "ordered_burst_replies": 48
+        },
+        "directions": [],
+        "forwarded_query_latency_ms": {
+          "median": 1.519,
+          "maximum": 65.21
+        }
+      },
+      "stress": null
+    }
+  ],
+  "final_soak": {
+    "time_utc": "2026-11-23T02:06:34.366805+00:00",
+    "version": "V5.0.0",
+    "baud": 57600,
+    "requested_active_seconds": 1800.0,
+    "passed": true,
+    "restored": true,
+    "seconds": 1800.538,
+    "counts": {
+      "USB_query_replies": 179458,
+      "canary_rounds": 979,
+      "forwarded_queries": 140889,
+      "maximum_forwarded_payloads": 15161,
+      "ordered_burst_replies": 30216,
+      "USB_RS485_concurrency_rounds": 3777,
+      "checked_forwarded_setters": 1890,
+      "missing_peer_recoveries": 30,
+      "master_session_recoveries": 20,
+      "peer_USB_backpressure_rounds": 10,
+      "peer_USB_writes_backpressured": 10,
+      "address31_rounds": 14
+    },
+    "directions": [
+      {
+        "master": "0003",
+        "peer": "0001",
+        "active_seconds": 900.023,
+        "loops": 62928,
+        "forwarded_queries": 73368
+      },
+      {
+        "master": "0001",
+        "peer": "0003",
+        "active_seconds": 900.062,
+        "loops": 57905,
+        "forwarded_queries": 67521
+      }
+    ],
+    "trace_sha256": "82fd6c26c22bd7cc469f204aeb8bcf8cf0487dc2a4940c82d6d2a6522b02c598",
+    "trace_records": 147395,
+    "latency_ms": {
+      "median": 8.871,
+      "max": 88.698
+    }
+  },
+  "counts_all_qualifying_runs": {
+    "USB_query_replies": 311512,
+    "canary_rounds": 1695,
+    "forwarded_queries": 240465,
+    "maximum_forwarded_payloads": 25645,
+    "ordered_burst_replies": 51576,
+    "USB_RS485_concurrency_rounds": 6387,
+    "checked_forwarded_setters": 3202,
+    "missing_peer_recoveries": 54,
+    "master_session_recoveries": 40,
+    "peer_USB_backpressure_rounds": 26,
+    "address31_rounds": 32,
+    "peer_USB_writes_backpressured": 20,
+    "remote_USB_comparisons": 1090,
+    "forwarded_setter_checks": 360,
+    "simultaneous_USB_RS485_rounds": 1000,
+    "highest_address_channel_checks": 240
+  },
+  "final_verification": {
+    "time_utc": "2026-11-23T02:36:53.855136+00:00",
+    "passed": true,
+    "units": {
+      "0003": {
+        "error_before_reload": "0,\"No error\"",
+        "error_after_verification": "0,\"No error\"",
+        "live_before_reload": {
+          "time_utc": "2026-11-23T02:36:53.879999+00:00",
+          "port": "COM10",
+          "usb_serial": "4977386D3659",
+          "usb_location": "1-10.4.1.1.1.4",
+          "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+          "settings_view": "live",
+          "queries": {
+            "INSTR:RS485?": "0",
+            "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+            "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+            "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0001"
+          }
+        },
+        "stored_after_reload": {
+          "time_utc": "2026-11-23T02:36:54.221335+00:00",
+          "port": "COM10",
+          "usb_serial": "4977386D3659",
+          "usb_location": "1-10.4.1.1.1.4",
+          "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+          "settings_view": "stored_after_reload",
+          "queries": {
+            "INSTR:RS485?": "0",
+            "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+            "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+            "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0001"
+          },
+          "configuration": {
+            "GAIN": [
+              "1",
+              "1",
+              "1",
+              "1"
+            ],
+            "DR": [
+              "15",
+              "15",
+              "15",
+              "15"
+            ],
+            "MODE": [
+              "1",
+              "1",
+              "1",
+              "1"
+            ]
+          }
+        }
+      },
+      "0001": {
+        "error_before_reload": "0,\"No error\"",
+        "error_after_verification": "0,\"No error\"",
+        "live_before_reload": {
+          "time_utc": "2026-11-23T02:36:54.312133+00:00",
+          "port": "COM9",
+          "usb_serial": "4976386E3659",
+          "usb_location": "1-10.4.1.1.1.1",
+          "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.0",
+          "settings_view": "live",
+          "queries": {
+            "INSTR:RS485?": "0",
+            "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+            "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0003",
+            "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+          }
+        },
+        "stored_after_reload": {
+          "time_utc": "2026-11-23T02:36:54.681754+00:00",
+          "port": "COM9",
+          "usb_serial": "4976386E3659",
+          "usb_location": "1-10.4.1.1.1.1",
+          "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.0",
+          "settings_view": "stored_after_reload",
+          "queries": {
+            "INSTR:RS485?": "0",
+            "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+            "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0001",
+            "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+          },
+          "configuration": {
+            "GAIN": [
+              "1",
+              "1",
+              "1",
+              "1"
+            ],
+            "DR": [
+              "15",
+              "15",
+              "15",
+              "15"
+            ],
+            "MODE": [
+              "1",
+              "1",
+              "1",
+              "1"
+            ]
+          }
+        }
+      }
+    },
+    "standard_binary_sha256": "10bd9c9fddc0aaba833d4808af189d25a8f1b8f3ea1e5bc8dfe5c5de915d5806"
+  },
+  "prior_interrupted_attempts": [
+    "..\\Validation\\2026-11-22_RS485_Baud_Stress\\resume-20261123T020610Z-stopped-summary.json"
+  ],
+  "limitations": [
+    "Two physical nodes on the user's approximately 0.5m CAT5e pair only; not a 32-node, long-cable or electrical-noise qualification.",
+    "Host-observed command/reply checks, not a measured physical-layer bit-error rate.",
+    "Voltage data are real ADC readings without a known voltage reference; absolute accuracy is not established.",
+    "One master at a time; duplicate-address and concurrent-master arbitration are not implemented or qualified.",
+    "Calibration preservation checked by formatted CAL? readback; no calibration/save commands issued.",
+    "Request-ID block rollover inferred when per-master forwarded count exceeds 65536; request IDs were not independently captured on the wire.",
+    "The baseline trace is sampled and lacks completed-vs-blocked USB pressure counts; later runs log these explicitly."
+  ]
+}

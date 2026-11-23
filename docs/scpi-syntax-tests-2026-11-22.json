@@ -1,0 +1,141 @@
+{
+  "time_utc": "2026-11-22T18:57:05.415649+00:00",
+  "version": "V4.0.0",
+  "library_version": "3.0.0",
+  "passed": true,
+  "scope": [
+    "header query marker",
+    "strict comma argument fields",
+    "one command per LF",
+    "exact case preserved"
+  ],
+  "deferred": [
+    "error queue",
+    "status registers",
+    "compound commands",
+    "other interface improvements"
+  ],
+  "target": {
+    "identity": "A2D Electronics,4CH Isolated ADC,0003,V4.0.0",
+    "port": "COM10",
+    "usb_serial": "4977386D3659",
+    "usb_location": "1-10.4.1.1.1.4"
+  },
+  "excluded_unit": "0001 (never opened or flashed)",
+  "image": {
+    "bytes": 43404,
+    "sha256": "99412bdba04cf5890bfed730964ac39a3b89dea311538c4fd3bd684c979ec2d9",
+    "flash_free_bytes": 11892,
+    "linker_ram_bytes": 8664
+  },
+  "host": {
+    "portable_scpi_groups": 15,
+    "application_groups": 45,
+    "board_service_groups": 17,
+    "cdc_groups": 3,
+    "bootloader_checks": 4,
+    "numeric_cases": 16,
+    "standalone_C_example": true,
+    "python_tests": 23,
+    "passed": true
+  },
+  "hardware": {
+    "syntax": {
+      "passed": true,
+      "check_groups": 6,
+      "rejected_commands": 43,
+      "counts": {
+        "tx_bytes": 3755,
+        "replies": 295,
+        "canary_checks": 47,
+        "measurement_vectors": 3
+      }
+    },
+    "fuzz": {
+      "passed": true,
+      "seed": 261122,
+      "counts": {
+        "tx_bytes": 7460753,
+        "replies": 19419,
+        "canary_checks": 627,
+        "malformed_or_blank_frames": 20000
+      },
+      "seconds": 21.28
+    },
+    "packets": {
+      "passed": true,
+      "checks": 280
+    },
+    "sessions": {
+      "passed": true,
+      "checks": 51
+    },
+    "measurement": {
+      "passed": true,
+      "checks": 10,
+      "configuration_sweep": 12,
+      "channels": [
+        {
+          "channel": 1,
+          "count": 30,
+          "mean_volts": 0.0,
+          "min_volts": 0.0,
+          "max_volts": 0.0,
+          "stddev_volts": 0.0,
+          "mean_raw_volts": 0.0
+        },
+        {
+          "channel": 2,
+          "count": 30,
+          "mean_volts": 0.0,
+          "min_volts": 0.0,
+          "max_volts": 0.0,
+          "stddev_volts": 0.0,
+          "mean_raw_volts": 0.0
+        },
+        {
+          "channel": 3,
+          "count": 30,
+          "mean_volts": 0.0,
+          "min_volts": 0.0,
+          "max_volts": 0.0,
+          "stddev_volts": 0.0,
+          "mean_raw_volts": 0.0
+        },
+        {
+          "channel": 4,
+          "count": 30,
+          "mean_volts": 0.0004366666666666667,
+          "min_volts": 0.0004,
+          "max_volts": 0.0005,
+          "stddev_volts": 4.8189440982669864e-05,
+          "mean_raw_volts": 0.00012333333333333334
+        }
+      ]
+    },
+    "hub_uploads": [
+      "20261122T185223Z",
+      "20261122T185528Z"
+    ],
+    "final": {
+      "time_utc": "2026-11-22T18:56:34.649216+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V4.0.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+        "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0001"
+      }
+    }
+  },
+  "limits": [
+    "Inputs unconnected; no accuracy reference",
+    "No physical RS485 peer; host simulations and missing-peer timeout only"
+  ],
+  "test_harness_correction": "First forwarding check used non-master address7 and correctly stayed silent; corrected to address0 and reran successfully; no firmware change.",
+  "evidence_directory": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_SCPI_Syntax"
+}

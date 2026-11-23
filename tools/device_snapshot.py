@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,24 +32,59 @@ def identify(port, expected_serial, expected_usb_serial=None):
         raise
 
 
+def read_snapshot(connection, descriptor, identity, *, reload_settings=False):
+    """Read through an already verified connection; optional reload is explicit."""
+    version = identity.rsplit(",", 1)[-1]
+    if not re.fullmatch(r"V[0-9]+\.[0-9]+\.[0-9]+", version):
+        raise RuntimeError("Unrecognized firmware version for query syntax")
+    parsed_version = tuple(map(int, version[1:].split(".")))
+    legacy = parsed_version < (4, 0, 0)
+    queued_errors = parsed_version >= (5, 0, 0)
+    if reload_settings:
+        if queued_errors:
+            connection.write(b"*CLS\n")
+        connection.write(b"*RST\n*IDN?\n")
+        reply = connection.readline().decode("ascii", errors="replace").strip()
+        if reply != identity:
+            raise RuntimeError(f"Settings reload failed: {reply!r}")
+        if queued_errors:
+            connection.write(b"SYST:ERR?\n")
+            error = connection.readline().decode("ascii", errors="replace").strip()
+            if error != '0,"No error"':
+                raise RuntimeError(f"Settings reload failed: {error!r}")
+    result = {
+        "time_utc": datetime.now(timezone.utc).isoformat(),
+        "port": descriptor.device,
+        "usb_serial": descriptor.serial_number,
+        "usb_location": descriptor.location,
+        "identity": identity,
+        "settings_view": "stored_after_reload" if reload_settings else "live",
+        "queries": {},
+    }
+    # Keep stable report keys while updating a pre-V4 device to the new grammar.
+    legacy_queries = {
+        "CAL? 0": "CAL 0?",
+        "MEAS:VOLT? 0": "MEAS:VOLT 0?",
+        "MEAS:VOLT:ADC? 0": "MEAS:VOLT:ADC 0?",
+    }
+    for command in ("INSTR:RS485?", "CAL? 0", "MEAS:VOLT? 0", "MEAS:VOLT:ADC? 0"):
+        wire_command = legacy_queries.get(command, command) if legacy else command
+        connection.write((wire_command + "\n").encode("ascii"))
+        response = connection.readline().decode("ascii", errors="replace").strip()
+        if not response:
+            error = ""
+            if queued_errors:
+                connection.write(b"SYST:ERR?\n")
+                error = connection.readline().decode("ascii", errors="replace").strip()
+            raise RuntimeError(f"No response to {command!r}; queued error: {error!r}")
+        result["queries"][command] = response
+    return result
+
+
 def snapshot(port, expected_serial, expected_usb_serial=None):
     connection, descriptor, identity = identify(port, expected_serial, expected_usb_serial)
     with connection:
-        result = {
-            "time_utc": datetime.now(timezone.utc).isoformat(),
-            "port": port,
-            "usb_serial": descriptor.serial_number,
-            "usb_location": descriptor.location,
-            "identity": identity,
-            "queries": {},
-        }
-        for command in ("INSTR:RS485?", "CAL 0?", "MEAS:VOLT 0?", "MEAS:VOLT:ADC 0?"):
-            connection.write((command + "\n").encode("ascii"))
-            response = connection.readline().decode("ascii", errors="replace").strip()
-            if not response:
-                raise RuntimeError(f"No response to {command!r}")
-            result["queries"][command] = response
-        return result
+        return read_snapshot(connection, descriptor, identity)
 
 
 if __name__ == "__main__":

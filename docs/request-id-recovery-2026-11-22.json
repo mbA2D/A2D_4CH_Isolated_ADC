@@ -1,0 +1,160 @@
+{
+  "time_utc": "2026-11-22T23:26:46.570244+00:00",
+  "passed": true,
+  "target": "0001",
+  "final_firmware_on_both_units": "V5.0.0",
+  "normal_image_sha256": "10bd9c9fddc0aaba833d4808af189d25a8f1b8f3ea1e5bc8dfe5c5de915d5806",
+  "root_cause_confirmed": "Both CRC-valid journal copies had nextRequest=0, disabling durable request-ID allocation after the legacy migration",
+  "repair": {
+    "time_utc": "2026-11-22T23:22:26.542367+00:00",
+    "target": "A2D Electronics,4CH Isolated ADC,0001,V5.0.901",
+    "USB_uid": "4976386E3659",
+    "before_active_counter": 0,
+    "new_next_request": 2147483649,
+    "calibration_address_serial_bitwise_preserved": true,
+    "both_journal_copies_valid": true,
+    "survived_settings_reload": true,
+    "passed": true
+  },
+  "service_image": {
+    "version": "V5.0.901",
+    "target_guard": "USB only; provisioned serial0001; MCU UID conversion4976386E3659",
+    "sha256": "e66170d15efc77a00e7762d5d474de2c46b2a5ec916be790461e8c8a8a668e1f",
+    "removed": true,
+    "permanent_service_commands_added": false
+  },
+  "host_verification": {
+    "existing_board_service_groups": 17,
+    "additional_recovery_group": 1,
+    "power_loss_boundaries": 63,
+    "wrong_identity_corrupt_record_and_advanced_counter_refused": true,
+    "passed": true
+  },
+  "RS485_main_run": {
+    "passed": true,
+    "restored": true,
+    "seconds": 29.184,
+    "counts": {
+      "USB_query_replies": 3234,
+      "forwarded_queries": 1418,
+      "remote_USB_comparisons": 1170,
+      "forwarded_setter_checks": 72,
+      "ordered_burst_replies": 96,
+      "simultaneous_USB_RS485_rounds": 200,
+      "highest_address_channel_checks": 48
+    },
+    "directions": [
+      {
+        "master": "0003",
+        "peer": "0001",
+        "address": 1,
+        "readings": {
+          "1": -0.0013,
+          "2": 0.0028,
+          "3": -0.0015,
+          "4": 0.0003
+        },
+        "missing_peer_seconds": 1.006
+      },
+      {
+        "master": "0001",
+        "peer": "0003",
+        "address": 1,
+        "readings": {
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0004
+        },
+        "missing_peer_seconds": 1.006
+      }
+    ],
+    "forwarded_query_latency_ms": {
+      "median": 8.849,
+      "maximum": 68.347
+    }
+  },
+  "RS485_after_firmware_restart": {
+    "passed": true,
+    "restored": true,
+    "seconds": 10.046,
+    "counts": {
+      "USB_query_replies": 1314,
+      "forwarded_queries": 466,
+      "remote_USB_comparisons": 218,
+      "forwarded_setter_checks": 72,
+      "ordered_burst_replies": 96,
+      "simultaneous_USB_RS485_rounds": 200,
+      "highest_address_channel_checks": 48
+    },
+    "directions": [
+      {
+        "master": "0003",
+        "peer": "0001",
+        "address": 1,
+        "readings": {
+          "1": -0.0013,
+          "2": 0.0028,
+          "3": -0.0015,
+          "4": 0.0003
+        },
+        "missing_peer_seconds": 1.006
+      },
+      {
+        "master": "0001",
+        "peer": "0003",
+        "address": 1,
+        "readings": {
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0004
+        },
+        "missing_peer_seconds": 1.007
+      }
+    ],
+    "forwarded_query_latency_ms": {
+      "median": 8.815,
+      "maximum": 67.157
+    }
+  },
+  "total_forwarded_queries": 1884,
+  "final": {
+    "0001": {
+      "time_utc": "2026-11-22T23:25:15.552596+00:00",
+      "port": "COM9",
+      "usb_serial": "4976386E3659",
+      "usb_location": "1-10.4.1.1.1.1",
+      "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+        "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0003",
+        "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+      },
+      "error_queue": "0,\"No error\""
+    },
+    "0003": {
+      "time_utc": "2026-11-22T23:25:15.622447+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.0",
+      "settings_view": "live",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+        "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0001"
+      },
+      "error_queue": "0,\"No error\""
+    }
+  },
+  "original_addresses_restored": {
+    "0001": 0,
+    "0003": 0
+  },
+  "production_firmware_changed": false,
+  "evidence_directory": "D:\\Documents\\A2D\\Projects\\003 - Isolated 4CH ADC\\Validation\\2026-11-22_0001_Request_ID_Recovery"
+}

@@ -44,9 +44,9 @@ def run(args):
         c.write(b"*IDN?\n")
         if c.readline().decode("ascii").strip() != identity:
             raise RuntimeError("Fresh identity lost framing after recovery")
-        c.write(b"CAL 0?\n")
+        c.write(b"CAL? 0\n")
         report["calibration"] = c.readline().decode("ascii").strip()
-        c.write(b"MEAS:VOLT 0?\n")
+        c.write(b"MEAS:VOLT? 0\n")
         report["volts"] = [float(v) for v in c.readline().decode("ascii").strip().split(",")]
         if len(report["volts"]) != 4:
             raise RuntimeError("Measurement recovery failed")

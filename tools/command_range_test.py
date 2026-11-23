@@ -36,7 +36,7 @@ def run(args):
         for channel in (0, 1, 4, 5, 128, 129):
             for points in invalid_points:
                 line = f"CAL:VOLT {channel},{points}"
-                rig.query(line, "ERROR:INVALID ARGUMENTS")
+                rig.query(line, (-102, -113, -128, -222, -224))
                 rig.check_canaries()
                 report["checks"].append("rejected without changing calibration/address: " + line)
 
@@ -47,11 +47,11 @@ def run(args):
             "INSTR:DR 61,0", "INSTR:DR 239,0", "INSTR:DR 241,0",
             "INSTR:MODE -1,0", "INSTR:MODE 2,0", "INSTR:MODE 256,0",
             "INSTR:RS485:SET -1", "INSTR:RS485:SET 32", "INSTR:RS485:SET 256",
-            "MEAS:VOLT -1?", "MEAS:VOLT 129?", "MEAS:VOLT:ADC 256?",
-            "CAL -1?", "CAL:RESET 129", "CAL:SAVE 256", "INSTR:GAIN 2,129",
+            "MEAS:VOLT? -1", "MEAS:VOLT? 129", "MEAS:VOLT:ADC? 256",
+            "CAL? -1", "CAL:RESET 129", "CAL:SAVE 256", "INSTR:GAIN 2,129",
         )
         for line in invalid:
-            rig.query(line, "ERROR:INVALID ARGUMENTS")
+            rig.query(line, (-102, -113, -128, -222, -224))
             rig.check_canaries()
             report["checks"].append("rejected: " + line)
 
@@ -60,7 +60,7 @@ def run(args):
                      "INSTR:DR 60,0", "INSTR:DR 240,0", "INSTR:MODE 0,0", "*TRG",
                      "INSTR:MODE 1,0"):
             rig.command(line)
-            rig.vector("MEAS:VOLT:ADC 0?")
+            rig.vector("MEAS:VOLT:ADC? 0")
             report["checks"].append("accepted: " + line)
         for address in (31, 0):
             rig.command(f"INSTR:RS485:SET {address}")
@@ -68,7 +68,7 @@ def run(args):
             rig.query("INSTR:RS485?", str(address))
             if address == 31:
                 for channel in (0, 1, 4, 125, 128):
-                    answer = [float(v) for v in rig.query(f"MEAS:VOLT {channel}?").split(",")]
+                    answer = [float(v) for v in rig.query(f"MEAS:VOLT? {channel}").split(",")]
                     if not all(math.isfinite(v) for v in answer):
                         raise RuntimeError("Bad channel-boundary measurement")
                     report["checks"].append(f"accepted local/group/global channel {channel}")
@@ -84,7 +84,7 @@ def run(args):
         )
         for points, offset, gain in valid:
             rig.command("CAL:VOLT 1," + points)
-            values = [float(v) for v in rig.query("CAL 1?").split(",")]
+            values = [float(v) for v in rig.query("CAL? 1").split(",")]
             if len(values) != 2 or abs(values[0] - offset) > 0.00001 or abs(values[1] - gain) > 0.00001:
                 raise RuntimeError(f"Wrong accepted calibration: {points}: {values}")
             report["checks"].append("accepted calibration boundary: " + points)
@@ -92,17 +92,17 @@ def run(args):
         # Save a usable value, then prove rejected updates cannot change the next save/reload.
         rig.install_canaries()
         rig.command("CAL:SAVE 1")
-        rig.query("CAL:VOLT 1,0,0,1e20,1", "ERROR:INVALID ARGUMENTS")
+        rig.query("CAL:VOLT 1,0,0,1e20,1", (-102, -113, -128, -222, -224))
         rig.command("CAL:SAVE 1")
         rig.command("*RST")
-        rig.query("CAL 1?", rig.marker)
+        rig.query("CAL? 1", rig.marker)
         report["checks"].append("rejected calibration cannot replace persisted valid calibration")
         # Reconstruct known defaults rather than importing rounded display coefficients.
         rig.command("CAL:RESET 0")
         rig.command("CAL:SAVE 0")
         rig.command("INSTR:RS485:SET 0")
         rig.command("*RST")
-        rig.query("CAL 0?", factory)
+        rig.query("CAL? 0", factory)
         rig.query("INSTR:RS485?", "0")
         report["checks"].append("nominal stored calibration/address restored")
         report["passed"] = True
@@ -120,6 +120,6 @@ def run(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", required=True)
-    parser.add_argument("--version", default="V2.1.3")
+    parser.add_argument("--version", default="V5.0.0")
     parser.add_argument("--output", type=Path, required=True)
     run(parser.parse_args())

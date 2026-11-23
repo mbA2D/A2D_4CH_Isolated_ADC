@@ -1,31 +1,33 @@
 #ifndef A2D_CALIBRATION_H
 #define A2D_CALIBRATION_H
 #include <stdint.h>
-namespace a2d {
-struct Coefficients { float gain; float offset; };
-// Device policy, not electrical absolute-maximum ratings. Measured points and
-// stored offset use raw ADC volts; actual points use the board's 0..5V input.
-namespace CalibrationLimits {
-constexpr float ActualMin = 0.0f, ActualMax = 5.0f;
-constexpr float MeasuredMax = 2.048f, MinMeasuredSpan = 0.001f;
-constexpr float DefaultGain = 2.818181818f;
-constexpr float MinGain = DefaultGain * 0.9f, MaxGain = DefaultGain * 1.1f;
-constexpr float MaxOffset = 0.25f;
+#include <stdbool.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+typedef struct { float gain, offset; } A2D_Coefficients;
+typedef struct { A2D_Coefficients values[4]; } A2D_Calibration;
+#define A2D_CAL_ACTUAL_MIN 0.0f
+#define A2D_CAL_ACTUAL_MAX 5.0f
+#define A2D_CAL_MEASURED_MAX 2.048f
+#define A2D_CAL_MIN_SPAN 0.001f
+#define A2D_CAL_DEFAULT_GAIN 2.818181818f
+#define A2D_CAL_MIN_GAIN (A2D_CAL_DEFAULT_GAIN * 0.9f)
+#define A2D_CAL_MAX_GAIN (A2D_CAL_DEFAULT_GAIN * 1.1f)
+#define A2D_CAL_MAX_OFFSET 0.25f
+/* Offset/measured points are raw ADC volts; actual points are board-input volts. */
+void a2d_calibration_init(A2D_Calibration *calibration);
+void a2d_calibration_reset(A2D_Calibration *calibration, uint8_t channel);
+void a2d_calibration_reset_all(A2D_Calibration *calibration);
+bool a2d_calibration_valid(A2D_Coefficients values);
+bool a2d_calibration_calculate(float actual1, float measured1, float actual2, float measured2, A2D_Coefficients *values);
+bool a2d_calibration_calibrate(A2D_Calibration *calibration, uint8_t channel, float actual1, float measured1, float actual2, float measured2);
+/* NaN on invalid channel, preserving a failed acquisition rather than inventing0 V. */
+float a2d_calibration_apply(const A2D_Calibration *calibration, uint8_t channel, float raw);
+A2D_Coefficients a2d_calibration_get(const A2D_Calibration *calibration, uint8_t channel);
+bool a2d_calibration_load(A2D_Calibration *calibration, uint8_t channel, A2D_Coefficients values);
+
+#ifdef __cplusplus
 }
-class Calibration {
-public:
-    Calibration();
-    void reset(uint8_t channel);
-    void resetAll();
-    // Protocol order, retained from existing hosts. Measured values are raw ADC volts.
-    bool calibrate(uint8_t channel, float actual1, float measured1, float actual2, float measured2);
-    static bool calculate(float actual1, float measured1, float actual2, float measured2, Coefficients &values);
-    static bool valid(Coefficients values);
-    float apply(uint8_t channel, float raw) const;
-    Coefficients get(uint8_t channel) const;
-    bool load(uint8_t channel, Coefficients values);
-private:
-    Coefficients values_[4];
-};
-}
+#endif
 #endif

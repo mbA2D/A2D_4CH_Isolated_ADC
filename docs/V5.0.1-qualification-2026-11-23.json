@@ -1,0 +1,600 @@
+{
+  "version": "V5.0.1",
+  "result": "PASS",
+  "qualification_date": "2026-11-23",
+  "image": {
+    "bytes": 43212,
+    "sha256": "1e4c8e2348f4561685c335a5efe9ddb2a82c8bbdc16387eec6f222bc4a49ac71",
+    "rs485_baud": 230400,
+    "format": "8N1",
+    "origin": "0x08002000",
+    "settings_start": "0x0800F800",
+    "linker_ram_bytes_including_heap_stack_reserve": 8696
+  },
+  "setup": {
+    "units": [
+      "0003",
+      "0001"
+    ],
+    "usb": "Both connected through original shared hub paths",
+    "rs485_cable": "Approximately 50 cm, one pair removed from UTP CAT5e",
+    "termination": "Enabled at both ends",
+    "masters": "One at a time",
+    "reference_voltage": "No specified reference; accuracy not qualified"
+  },
+  "reviews": {
+    "uart_dma": "Independent reviewer Lovelace: all five findings resolved; no remaining concrete correctness issue",
+    "system": "Independent reviewer Kepler: all findings resolved; no blocking finding in reviewed release path",
+    "dispositions": "V5.0.1-review-2026-11-23.md"
+  },
+  "host_regressions": {
+    "native_suites": "PASS, including production UART and line-reader integration",
+    "python_tests": 36,
+    "python_result": "PASS",
+    "offline_release_checks": "PASS: immutable stored baseline, independently attempting both units, rejection of altered original runtime settings"
+  },
+  "preparation": {
+    "complete": true,
+    "functional_forwarded_queries": 898,
+    "smoke_forwarded_queries": 38411
+  },
+  "soak": {
+    "time_utc": "2026-11-23T16:04:20.020073+00:00",
+    "requested_active_seconds": 14400.0,
+    "seconds": 14400.578,
+    "passed": true,
+    "restored": true,
+    "counts": {
+      "max_host_activity_gap_ms": 1006,
+      "USB_query_replies": 3938718,
+      "canary_rounds": 21028,
+      "forwarded_queries": 3096581,
+      "maximum_forwarded_payloads": 331729,
+      "ordered_burst_replies": 662504,
+      "mixed_USB_RS485_rounds": 82813,
+      "checked_forwarded_setters": 41408,
+      "checked_GAIN_channel1_setters": 3452,
+      "checked_DR_channel1_setters": 3452,
+      "checked_MODE_channel1_setters": 3452,
+      "checked_GAIN_channel2_setters": 3452,
+      "checked_DR_channel2_setters": 3450,
+      "checked_MODE_channel2_setters": 3450,
+      "checked_GAIN_channel3_setters": 3450,
+      "checked_DR_channel3_setters": 3450,
+      "checked_MODE_channel3_setters": 3450,
+      "checked_GAIN_channel4_setters": 3450,
+      "checked_DR_channel4_setters": 3450,
+      "checked_MODE_channel4_setters": 3450,
+      "direct_and_calibrated_measurement_checks": 956,
+      "frozen_single_shot_measurement_checks": 956,
+      "missing_peer_recoveries": 240,
+      "verified_pending_transaction_cancellations": 160,
+      "delayed_peer_reply_session_recoveries": 160,
+      "delayed_peer_reply_recoveries_master_0003": 80,
+      "master_session_recoveries": 160,
+      "peer_USB_backpressure_rounds": 80,
+      "peer_USB_writes_backpressured": 80,
+      "address31_rounds": 120,
+      "oversized_USB_recoveries": 96,
+      "fragmented_USB_RS485_recoveries": 48,
+      "actual_USB_port_reopens": 32,
+      "delayed_peer_reply_recoveries_master_0001": 80
+    },
+    "directions": [
+      {
+        "master": "0003",
+        "peer": "0001",
+        "active_seconds": 7200.026,
+        "loops": 1361818,
+        "forwarded_queries": 1591261
+      },
+      {
+        "master": "0001",
+        "peer": "0003",
+        "active_seconds": 7200.052,
+        "loops": 1288161,
+        "forwarded_queries": 1505320
+      }
+    ],
+    "latency_ms": {
+      "median": 3.359,
+      "max": 60.51
+    },
+    "trace_sha256": "e29da40a3e8de9606ce9100ec40461d518a8dab6b80d090ea05c8526fe7ff823",
+    "trace_records": 3237023
+  },
+  "before_repeat_upload_verification": {
+    "0003": {
+      "passed": true,
+      "errors": [],
+      "saved_after_reload": {
+        "time_utc": "2026-11-23T20:04:22.046595+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0005",
+          "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0001"
+        }
+      },
+      "final": {
+        "time_utc": "2026-11-23T20:04:22.116094+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0005",
+          "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0002"
+        }
+      },
+      "configuration": {
+        "GAIN": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "DR": [
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        "MODE": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      }
+    },
+    "0001": {
+      "passed": true,
+      "errors": [],
+      "saved_after_reload": {
+        "time_utc": "2026-11-23T20:04:22.576878+00:00",
+        "port": "COM9",
+        "usb_serial": "4976386E3659",
+        "usb_location": "1-10.4.1.1.1.1",
+        "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+          "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0001",
+          "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+        }
+      },
+      "final": {
+        "time_utc": "2026-11-23T20:04:22.647678+00:00",
+        "port": "COM9",
+        "usb_serial": "4976386E3659",
+        "usb_location": "1-10.4.1.1.1.1",
+        "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+          "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0001",
+          "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+        }
+      },
+      "configuration": {
+        "GAIN": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "DR": [
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        "MODE": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      }
+    }
+  },
+  "repeat_uploads": [
+    {
+      "serial": "0003",
+      "image_sha256": "1e4c8e2348f4561685c335a5efe9ddb2a82c8bbdc16387eec6f222bc4a49ac71",
+      "usb_uid": "4977386D3659",
+      "hub_path": "1-10.4.1.1.1.4",
+      "identity_after": "A2D Electronics,4CH Isolated ADC,0003,V5.0.1",
+      "snapshot_sha256": "a908ff1ca812377d8dec34c86a3fe07aaeb7306663a2dabf4ca457b0669a79b9",
+      "time_utc": "2026-11-23T20:04:27.719128+00:00"
+    },
+    {
+      "serial": "0001",
+      "image_sha256": "1e4c8e2348f4561685c335a5efe9ddb2a82c8bbdc16387eec6f222bc4a49ac71",
+      "usb_uid": "4976386E3659",
+      "hub_path": "1-10.4.1.1.1.1",
+      "identity_after": "A2D Electronics,4CH Isolated ADC,0001,V5.0.1",
+      "snapshot_sha256": "db68330d23a306cd1b2754d006f8afafcb6289f183c3c16d74f29a288cc7742d",
+      "time_utc": "2026-11-23T20:04:32.682136+00:00"
+    }
+  ],
+  "post_upload_functional": {
+    "passed": true,
+    "restored": true,
+    "counts": {
+      "USB_query_replies": 2204,
+      "forwarded_queries": 898,
+      "remote_USB_comparisons": 650,
+      "forwarded_setter_checks": 72,
+      "ordered_burst_replies": 96,
+      "simultaneous_USB_RS485_rounds": 200,
+      "highest_address_channel_checks": 48
+    }
+  },
+  "final_verification": {
+    "0003": {
+      "passed": true,
+      "errors": [],
+      "saved_after_reload": {
+        "time_utc": "2026-11-23T20:04:47.673314+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0005",
+          "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0002"
+        }
+      },
+      "final": {
+        "time_utc": "2026-11-23T20:04:47.751489+00:00",
+        "port": "COM10",
+        "usb_serial": "4977386D3659",
+        "usb_location": "1-10.4.1.1.1.4",
+        "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+          "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0005",
+          "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0002"
+        }
+      },
+      "configuration": {
+        "GAIN": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "DR": [
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        "MODE": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      }
+    },
+    "0001": {
+      "passed": true,
+      "errors": [],
+      "saved_after_reload": {
+        "time_utc": "2026-11-23T20:04:48.207102+00:00",
+        "port": "COM9",
+        "usb_serial": "4976386E3659",
+        "usb_location": "1-10.4.1.1.1.1",
+        "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+          "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0001",
+          "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+        }
+      },
+      "final": {
+        "time_utc": "2026-11-23T20:04:48.277788+00:00",
+        "port": "COM9",
+        "usb_serial": "4976386E3659",
+        "usb_location": "1-10.4.1.1.1.1",
+        "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.1",
+        "settings_view": "live",
+        "queries": {
+          "INSTR:RS485?": "0",
+          "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+          "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0001",
+          "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+        }
+      },
+      "configuration": {
+        "GAIN": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "DR": [
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        "MODE": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      }
+    }
+  },
+  "final_error_queues": {
+    "0003": "0,\"No error\"",
+    "0001": "0,\"No error\""
+  },
+  "immutable_baseline": {
+    "0003": {
+      "time_utc": "2026-11-23T15:38:45.001054+00:00",
+      "port": "COM10",
+      "usb_serial": "4977386D3659",
+      "usb_location": "1-10.4.1.1.1.4",
+      "identity": "A2D Electronics,4CH Isolated ADC,0003,V5.0.1",
+      "settings_view": "stored_after_reload",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00000,2.81818,0.00000,2.81818,0.00000,2.81818,0.00000,2.81818",
+        "MEAS:VOLT? 0": "0.0000,0.0000,0.0000,0.0004",
+        "MEAS:VOLT:ADC? 0": "0.0000,0.0000,0.0000,0.0001"
+      }
+    },
+    "0001": {
+      "time_utc": "2026-11-23T15:38:49.918983+00:00",
+      "port": "COM9",
+      "usb_serial": "4976386E3659",
+      "usb_location": "1-10.4.1.1.1.1",
+      "identity": "A2D Electronics,4CH Isolated ADC,0001,V5.0.1",
+      "settings_view": "stored_after_reload",
+      "queries": {
+        "INSTR:RS485?": "0",
+        "CAL? 0": "0.00053,2.83073,-0.00093,2.82885,0.00052,2.81886,0.00002,2.81292",
+        "MEAS:VOLT? 0": "-0.0013,0.0028,-0.0015,0.0001",
+        "MEAS:VOLT:ADC? 0": "0.0001,0.0001,0.0000,0.0001"
+      }
+    }
+  },
+  "provenance": {
+    "stored_baseline_sha256": "a904a44ccf40c876a965823be2ee780e6db76ce779773343627c550644157f3c",
+    "original_runtime_settings_sha256": "bc3de134ee7ce37d525f40a959672930ce1bb958746dd7b6d560973eb6a18d82",
+    "qualification_scripts_sha256": {
+      "rs485_release_soak.py": "70c3c1fce50321e5ab27e5bc1aa00065cc3266c42b0937ba27fa3449e29d4254",
+      "rs485_stress_test.py": "dc936d08875124737bfcace009450f1b81e40c8b000c1b2ce0ce2bbdddac1392",
+      "rs485_link_test.py": "dc2cc8e44c6b49a59ffbab098faebf903ab40b13940463a1994203f49c8ac366",
+      "device_snapshot.py": "33daaee8d04541a4ece04a92a7f510ce7ee534bdf627b15c44e31edff29c25df",
+      "scpi_errors.py": "b1ce7bde5862cded5895cd0a53a93630f65f06181c3af30c3c113f79a6e87243",
+      "usb_upload.py": "bffea955e78ccd1442c7d499378b537e17186c1572205808edf791db1f1d41af",
+      "provision_identity.py": "449ce6ba71e05697f172e32f6c41cd0cdce1e3f3546e7d25a1753a3e30f3cd5b",
+      "qualify.py": "523d231b6249e625614c8c2339f29de2de199d2ad0aca3b4b9e9143c47e1530c"
+    },
+    "firmware_sources_sha256": {
+      "A2D_4CH_Isolated_ADC.c": "51b20335a1b5b55c0d18e67e1ebb06472967b9cb1925f2f31ec45a9401d9f822",
+      "A2D_4CH_Isolated_ADC.h": "3ec23f61c68d66e5f28edc871c68513c40460705b7bbb3e70643f7425401904f",
+      "A2D_4CH_Isolated_ADC_V1.0.h": "fc8859f9651d50225ca6e45b15d39f62709370de3cbd7d48458164d03a75ca41",
+      "A2D_Application.c": "a93358b1f8f280a22584e5dc59b9b7c95edb45c004f2bc77abb5bdc0e13a7b23",
+      "A2D_Application.h": "34ed865f0cf823cd487fb74a2d13d18fe58a049cc88351797bf68db6d22b342f",
+      "A2D_BoardConfig.h": "34bb62f258e1a4ae2440b1c2c730827dc7c728c157bc41a27c0e4deddd4d7e45",
+      "A2D_Calibration.c": "8b7f15e82031441017f2ce1de97906ab78b7260ca5768ad1292eb879cab4d075",
+      "A2D_Calibration.h": "42d65ef97602704b481d4dd5c2c418a7cb3082d067b655286e9acf9d04ac0abd",
+      "A2D_Dispatcher.c": "312cc25eb2d22fbbb4bbf7d8ece7446f8872424ab532bb81916104792ccbdca6",
+      "A2D_Dispatcher.h": "5ef3cbd63be7ff0cbb472641f2471848bab3410ae3ec9fc0d9c12d0a78b8590e",
+      "A2D_Flash.c": "6ff797a91c7a60614a96776d84c7564c93999c246720e3620763ec43dc17edef",
+      "A2D_Flash.h": "0d883cd686cba8223870cb92422e0f1a94d979035f350439ae9458a711067f03",
+      "A2D_HAL.h": "e7ab1fa4cd492962604790e9e5328f140d9c4ae584c7f768571557603b7d6b29",
+      "A2D_IO.c": "2a09c91f76939757af88feaa342db43e4ec41adf08ca603f8e7b9f495bc39530",
+      "A2D_MCP3425.h": "aeb0860cedfe6ee116645996009553cacbb32b8f68cfb55637d44d7fd31695af",
+      "A2D_Measurement.c": "798e46d98716201f4bd6176e9d5a49eb4427f93db771a8ed57c49ac22e6b869d",
+      "A2D_Measurement.h": "afc26b5132188a17cc873bfd84c8872fbe3966e34270c301a537a679fbef1428",
+      "A2D_Platform.h": "a6c5d9ad271e30e599812a000538a2bdbc4f7588d136103efa9ac061ae490da8",
+      "A2D_Protocol.c": "ed1988b9e72b9ed35980d94d7db32a3c07d05f89f41a09f484dbf0aac23481f1",
+      "A2D_Protocol.h": "2b3ff9ebe0b5dd9a53c91692c0d54ee33d2ad91680507781d6924c40f6b08e98",
+      "A2D_SettingsStore.c": "d17879689a5b3ba8213c04b15843e492b3ca796b3408fc5e469b314676e34534",
+      "A2D_SettingsStore.h": "49884c3f4613c33a771aa39661d6f94a853fb6cffed30dc964b801722de0a2aa",
+      "A2D_Transport.c": "a4e8f8bc49831b88be0c1e54089526cb0ba45212cf617ff6a69ac73e31188f19",
+      "A2D_Transport.h": "9976203ec619f501389d4a0e785995efd84b0cd76949f9a0de766dfe6ffbfe78",
+      "A2D_USB_Bootloader.c": "c58041f7724b2f3e77d17b74a80236f516f24ebecea0bdd9e7bf7591a60b83e6",
+      "A2D_USB_Bootloader.h": "53ecaca3cf0dd8283b9f9629c18e3e7a4062000b441813d3b7be51eb34e21b56",
+      "A2D_USB_Session.h": "4009363def8290e039c97ec6ee7e474185aef4e759753d20daa994ceedb89842",
+      "cmake/arm-gcc.cmake": "48235e30877cf37ba85f84fcd58c18685eee5f1b9e5e9859b1360312fa45ab07",
+      "CMakeLists.txt": "e8fbcfb6cc7ca27c4cb447033e3ef4420abb17353dfd8bb922715658a4c34257",
+      "CMakePresets.json": "905d2704117ff4864023f7f7da4d263c92214b96fe48c6d4dcb8c96711d0d083",
+      "firmware/app.c": "f95aa48b511f91d1a0fca3cb683ea6103d95efe712b0a5d8504aede525e4e735",
+      "hal/include/main.h": "2b48afb4e5bc731b4507b463af5ab4f1f1dac83aecb0bb33e1bd14af9ed1d755",
+      "hal/include/stm32f1xx_hal_conf.h": "0bf66602cdd53c20eac8834e70ed0e5fc822b6d05e6a67ab1918c6f6db7ae5a9",
+      "hal/include/usbd_conf.h": "a662fb6376575bf2dd53a3fcfa41df500e8826afa49b6f16e493250537eefb94",
+      "hal/src/main.c": "884b1af19c46a56d0100a81d05fdfcf0b9327c1ae94544294a8b4c09fa5aa2a7",
+      "hal/src/syscalls.c": "d50f3dce4a29e23e6591cdefadb03dcea064816d3b59cd9dc40dacdc851ad3fe",
+      "hal/src/uart.c": "f6238563f227314a46d0f20de66e7456b547c10ec59d26922e7000f9d5db4a4a",
+      "hal/src/usb.c": "3c1896df992b14dd5562353b00d9cabf06c30ac2dd7497c20177bb4e8b6c952e",
+      "hal/src/usbd_conf.c": "27772e2847d8e9adc4fbcb97a4542d7cc76a1f0de7e67288742b0225536f6589",
+      "hal/src/usbd_desc.c": "6bcbad469cde4591968d6b90b59495ac02794a4d420400d6df95bb89ca479b3f",
+      "hal/STM32F103C8_Maple.ld": "3ad24cbacb50163b40f65eee63f4162757eb4fd5e1685c956ee3b62ce4c2f793",
+      "lib/A2D_Scpi/examples/portable_instrument/Instrument.c": "a8e6836ba7c0093289fdd1c946efc67867509969a0d8b051943b06f41603bfce",
+      "lib/A2D_Scpi/examples/portable_instrument/Instrument.h": "cb3b189351de8c84d0127da331e0892602cc33eb38c3d3bcf5e6146a87cd8350",
+      "lib/A2D_Scpi/examples/portable_instrument/main.c": "dddb1e52e95b684c708b40255c91793d39f72f2a91d33b0ebff27952a2210a7d",
+      "lib/A2D_Scpi/src/A2D_Scpi.c": "ca99730b373cc492afedd3505a9f49f964438039bbca60acd036d089d3005c64",
+      "lib/A2D_Scpi/src/A2D_Scpi.h": "0e9e38ebd389c4ac25b7cce7df005704ce9cf2f268a4ab19622da0c44d8280fb",
+      "lib/A2D_Scpi/src/A2D_ScpiErrorQueue.c": "6e92815e97dadbe3c11d16fe1b414ddfc92945a8de4465108dbdd753f0706610",
+      "lib/A2D_Scpi/src/A2D_ScpiErrorQueue.h": "c61837b32cb126567e7772278bdfc15dd8255d090091159c0fe786197452002a",
+      "lib/A2D_Scpi/src/A2D_ScpiLineReader.c": "47e0fe3f9c404986f509092974063fe5fccc476bc278d41f95bc43995b33c949",
+      "lib/A2D_Scpi/src/A2D_ScpiLineReader.h": "f6a9b3296b9ac03ec1930745aeeaedf77bb8f575ed0184309b489b25a8c2d0be",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f100xb.h": "ac5298dc8bac3645011d75afa9909d0466311699e7ef3895dd325c1b3454c7b8",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f100xe.h": "5a10009b1309bf53427fcc8b18773c6033ea035a5a1a524269ebc867b4f104be",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f101x6.h": "e7214b7efccbe00f2b1713f611a624d6c13f323f1da41a5b299ac4610b238343",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f101xb.h": "9f1ffbb7c1ee3a61053acc6bb372450b865c5ad97b5844c487f12aec52a9e6c9",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f101xe.h": "966cc69d58350da1f3a279ef0aa3855b5f53a1cdda3d11bf0d2077068d56e788",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f101xg.h": "e61593cae315787a7e62e6c1034b118557deb351f22b8adec888644e92675b16",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f102x6.h": "1b647d53830159f66e15a8eefcf7cedcee61d0a9660a238c1ca2768fbc6e34ce",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f102xb.h": "d86ebc974b597da94d8203f6e993004527db7da2a09097c6814b51afe938c68b",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103x6.h": "9c1aaee863f1682ed50c5d2db2ad59864def0d9e5bc075e89ef6874c28e5ce0a",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h": "4744170a3b00118283823ab4e86b989b014aecfe43e0e55403982369cf5fef21",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h": "daf857cff31019c101c0e815a27df07c7a5b67b01c2a0360661ee5686d1bb713",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xg.h": "b08d750ebe03fa7d553013c1921889465b5693cb3e2f9b9ebc60ade850274cb3",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f105xc.h": "05339cd14169a4257a27cdc62c5b16c394e7eab0c7478b231f9035a36ac6e13b",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f107xc.h": "2db66ed896a555278f439cffe32ef2bb40e5861c6143676d35016b0b0e62dfe3",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h": "65e7d272bdc9ffc9e1a6682c20d9f2a1073f3e76b05264f247cbe57987331a07",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h": "8b48ff3463b1c01394bd82e40154b73a288d275e2437923662b40061e88d4a92",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/startup_stm32f103xb.s": "420c2b8412c2247bdff38e22d963adcae2e563064b723370facffef552d9caa8",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c": "15d73c708ad67416bb24e59ba5f110baa6bdab217dd910f5daa33f8e979596d2",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/cmsis_armcc.h": "57b8d88cd03152f60bf74de0149ec979ae20210d86ab06e837aa69c66f27d615",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/cmsis_armclang.h": "da29dbad3cf27f6c86437af6bd0b302e105210742ad7a602bea51b104f1661c9",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/cmsis_compiler.h": "cd3cbd1c771a5252827a14c75a12e7ed975f76b9fc1577d53a74ba0e7c1af6c3",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/cmsis_gcc.h": "8c16d51f7884a9fc07c5cbe6f2bcd24e5e092ddc519f71d36740c2d2e2ff6a27",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/cmsis_iccarm.h": "a600765888c69ee60cd2d01d77356902d4ae5fa98aa7e1d73703663c96b7f87a",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/cmsis_version.h": "280b9fc8739aefa878d47e68d7adbd4908a15f98ec193cdba1a4b514133f5c34",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_armv8mbl.h": "220d90f3f99126e656c31c32f099ff766b32cf487f7dd77388e4c9a78e1898c8",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_armv8mml.h": "825a8799d71f3fa29690b1597dfc2dfb660b103d44e20b8185f26b4f3b4ffdf0",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm0.h": "1beaa04c859225f75142d055e9c5dacfc9ac1d88c82934177f745b9c5f3f4094",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm0plus.h": "c953256e1c1b1cd6accbbfca5d47c09a9b0534f3147b125e17e59c0ae6c30ed7",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm1.h": "460281028a261740cd5ec86840bed01c480d70ba5b54a0f9938d4cefadfd486b",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm23.h": "6303efec943ca0f9eccdab8fc39200d6f95dc943d4051198e0d49f24395028a5",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm3.h": "368296087a925cf78133d27e0854d748605441915e0f4fece93f2f97eea68adb",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm33.h": "7f1b6a76b119e1e1680f756da897929f63d98133442c5115678af60adf20f1a8",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm4.h": "738dff259c25e68ed2529baf425315d8dae1af5dac6c11b66bfdef82e78e86c9",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_cm7.h": "6b75e3bef1eb81e0d3e2c311ad26fcdbac4cde2cd3462a62b81a23f6aec0e55f",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_sc000.h": "d1528d13fbf91da620ef977e99802d83ded093c0521c04cad128da23e3001524",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/core_sc300.h": "fa514ea0cf5327b0523c2bdfebfb76fd2e69f972e5f60fbfb94ade56b31c722b",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/mpu_armv7.h": "b0b6da4ec744b5f547a94e60e24b0a6ff6bb7307d3f81a83d0b7c3a64dc29326",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/mpu_armv8.h": "8280a1d4d3d25f60cdc05b84718cf504f02b7265fc3b7c5790cb29cd7dcf116c",
+      "vendor/STM32CubeF1/Drivers/CMSIS/Include/tz_context.h": "7fcc21fc190f6fd970390e9caaa6a86d72fd10f9edf4efab36f12aecf1a8baa0",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h": "9bfd2b97037977881ab92615ac8cd224241d458be4c2ba12a83c543cffb6db80",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32f1xx_hal_can_ex_legacy.h": "76dd6e9e4fb9c7f2a2cf1f08933f32701ffd951c7ddcd5b59af9a3daaec95a47",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32f1xx_hal_can_legacy.h": "63ffddfa8133e56883f0708eb88f71ded379e8c4ab45fb9465c23a769f79f011",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32_assert_template.h": "33359ac539295776d5c5574513fafa94a731fb6fd9431973ed553533e5715600",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h": "701749189012d2bda33a629f2baf420b8a870b517b74ef43dc4311740beb804a",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h": "0c7c9c2d9124533192ff5033060d253ed401ad0a000d74ed5103c851c371fdc5",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h": "cbb46e52a3d1c3e572e9bc90a77544f24063fc3515a0f78eb1f1caa9e2c58d9d",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h": "4a7a12196ab55917fb5789f9ccf0d89d7e386090b9750634b18ff79de2063ca4",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cec.h": "29a22422d180f1ef10a1e7675535ade5171930504b16560f28fa2b8be6d2a411",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_conf_template.h": "013644d093e4075a62951e33fad28c551d43754de543c04e89aaf5947db2474c",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h": "eedb42e4f4f197cec250e18faa1a32711019c72ddec956fbc7596032f5228315",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_crc.h": "645779bcda14e7c38d11e30379bc40b2d2fdeaa7dcc2a45de4ef4840c66337b8",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dac.h": "70d14234c3af4f668825dd4c8cf100822ea45840c1687ae8641e3862623dad38",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dac_ex.h": "179ef64f9aad689b42c2982864dd101001f83446719cc53ebf61d739073c1a1a",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h": "dcc6db49aeb887d662d15c1c32e4dca10b76b40c33a84a1059d547159ebeac4d",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h": "34c7acd9bfd2f72cd08db6653484917c7ce6b5ec5ebc0d1d5f49c9ade9148e50",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h": "231bbebf3511e3ac40babed7b42bc6c279a77b699bb28d1c57d53c4868214c41",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_eth.h": "c91e59dd120550687a5127306816f625359212e52ce554ef803d00b22b655a9d",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_exti.h": "0bc0c61bc55c7d4d698ffcf8d71a9febe5b1201baaca0437c3c3da1f62f449ff",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h": "2507e53dab0c8340e4d8189929a46f34d25b059bdaa639cf1c754f186f240245",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h": "97a07ef38d87cc332fd30011a68e02725e112163f13259210e0f4a7f39476e98",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h": "3ae8ac366a2a55952fc4bada166e88f6d15fb884492048191f267f79ffa73d44",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h": "769eb507539209ec99906cb586e60c760c96ffcede2754e5c43717404e3f18de",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_hcd.h": "c4281a57d5f462e637f72645b61b60e5826923c0342b9dbf872c8baa03f2ec2c",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h": "ffc3f56f746113bab72283e016999760da95384d815e5e7dd8899cb551c0c84a",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2s.h": "c5af7244a12af777e382a9ecd3757aef872dcae607ea1cde65eea2d6dbe045ed",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_irda.h": "f2d57f0de43dbfa20d8bb81cba01f0a9a818b140b7b92d4e21a991b024bdc3c9",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_iwdg.h": "7131d896539884c9fbaa2b746d1acb0dbf7a9b0a677ab0c732bb9928b210e187",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_mmc.h": "91401d101a44ee5236f34d3d231ad308f31438bfbddb289d44220f79507ac913",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_nand.h": "e8e7756156922f29fe4e76776806c58b9e43bc81c8f3a9dc5e2cae1cf1c3f8c8",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_nor.h": "afc1ffeebdbce65f52ab2b9e9b016e0632802d4e5692e465181a8f9b45cf04be",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pccard.h": "3429bd8f7adc9395479ea2258d5dbfbc2a521156beb733ad7011747204306207",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd.h": "680d0103ba7caac76cf58b1ff63002e77f12fec5099232f0390d641a48d0265a",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h": "ed48946b08f1bdb4d1a26bc419bffdc8a2bd6d03a97923ee2635b71781bcea42",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h": "65b32570744f35cea1afaa080709bf0b9ee1ae637bd9dc6f03647b235e8b91a7",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h": "4147955e90b93093bb55063898048a83eb19e0bca4801c58c326d57f1ba6c8b5",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h": "fa0d67a0bf02d81df5f6b96247d30aee26bc97ebf4d6b2be872b60fc7ca0851c",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rtc.h": "95c609274eff580bcff1223923ec9fcd5af09ac2ab779fdce3e412bec5aafa24",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rtc_ex.h": "a8a623b5cde8bcf34001a95a56c556f1412c996491a9155ccc7be4b734acdc67",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_sd.h": "6e7e39caa773dd6dcc36d0ab41ff9577a2d354bebf906d6310e6584094f99f2e",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_smartcard.h": "890bdd80dd44f766f7efafb68e5878d1a69a2e6e845e9a856134ede4f1a19a73",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h": "597a9c4033af4dfaacbbf6053cabf4fe03277008f3b9a4e6113aa5d1c0fcee5c",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_sram.h": "17351a94760eea771361c479361dac6e1762487a632310b4eb620155fb30c6c9",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h": "bda9f5e5222daa9ddae23b86b8fd449699ddccf57681b3d1afe72598242887db",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h": "0a923547d8a6b89d4060f7e4a18602caf393ca86a54e32452fcb8042959ac667",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h": "8e75ea51307d1fcae4e06ccd1189ec325059cf8e36e18e501bc064b142d7aaa0",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_usart.h": "cb6a74e2061cd4e974b3c0374be63b4ae68ac31908f6ee8db2809c1b09004303",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_wwdg.h": "0c7dff42ad50588668500a78a1da24ef043f7a8b368fcc8f61b4f56ef3957c6d",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_adc.h": "4412a844880fc5366f67b7d9fb995b9d9ef455c11edc61835b32915612c996ec",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_bus.h": "b360c7b3eaaf5f6e0f31e82da8c80b8ad8e8bd0140f862b1b39e896c5e4c39f5",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_cortex.h": "d82911cc3f992c37833714adff86a4f01d9e73f11ac941542452da8dbde17a5a",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_crc.h": "9b49261cf3c623f2cdc7533a55be9b710a375f4f6fa9d63058450be0f2edfe11",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dac.h": "03dc9490e107d9ab0aa40cad76f8ed64278a0a2237361e542d0ef49cb4e773d2",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h": "6f5cb4301d1bc7b091c2ae2a54759d0e9cbd7d1c1f51abe78c29589d6ebb4bdf",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h": "e42125589dd081baeebabed85b1169de8a686296f52d045ad4b94d339ee5fec7",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_fsmc.h": "1376a425dbd6380de60456cbb1f5e141557bb42b50a431681cda2f4dcd3b46ae",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_gpio.h": "4fd337faf49f88f0672ae22e2617e7863f5e645f6a26bf32265f0ead69ddc914",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_i2c.h": "c9badccf9c259342e7032d3935ca7dc286bbb401a5d37ad8b20f570d6e41e09d",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_iwdg.h": "7c18131c24d050e1574eb7214a043c480aec3b309fe84fa5b241524072238c8c",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_pwr.h": "223c5181aa6d33e4a63873cbfed1f4fb88e6dd849daed35f64f2f7251eb15974",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rcc.h": "b0bc6387c98dafddc6268672e6eb87d713afa60caeb2c5f4e6aab07213e2c099",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rtc.h": "edaf97b29447364af69ce9cacc211240c919f05c34b233a737363dd1dd5960cf",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_sdmmc.h": "2e733c5b345342326279ac46a82fe069e1e17f51b789213e436605281054f260",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_spi.h": "a3a97f94354393b0c625f7c71654eb2edfefd591ee3b40d00022018f69def781",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_system.h": "19ef0655b999dca8ba1f6a2eca0fba55ae03e3fd9649b40dd55b9a85f435b3c6",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_tim.h": "f946f89fb6242bf93ec3ff2153f2d4971f9498457d3b9b4d4d2f7031237b1769",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usart.h": "36e1e830c8939674c6ac3df4699db1f1369243d4f2bc3abc264186a7ccd11fd3",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h": "a0f2fd616f443db8e9c9eeed2c43f398d6703a4167c22e028aa8c5daea701a88",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_utils.h": "5f102d18314a8bd2f5c539c85ae6008b0e0b38a1f5ad66d3578f6d9ebf69b189",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_wwdg.h": "0230bb4491fa85a36943c5d15dbde8aed730d28a63ac7774385dc5e4f2b9c6b6",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c": "6650fcfa559dca126b91c6c0f576e3dec25ddb26811c55e294cbcc01888a85ec",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c": "024427c57b2f4413fe95806fb5e91b3703093d9b132f4976bd9a1525989f6e23",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c": "0662e01264be0233a4f8f2206dadf1c223caa17fd54c3b0e2d4a1ae771bd9c2b",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c": "7ea731eb5aaee6092f84738e5a8a2af5e78065619a49000d4949449855f0f601",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c": "e89ce67f60e1a9a99b106a3fc87ed8b4e1ddf30091a74c45158659266a7dc4c0",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c": "a2e12792c9d49eecdc567ab9fc1a49ed90723007f9579b702c28960dfd83e121",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c": "beb83cfbcbfed8ce30d58f810b3510dfaab584ddb5468c1d0e852b343b98eb9c",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pcd.c": "a45c7cf556f3bb81e3acefc5ca1d4659bd10622ec893f50d9cef12f90cb09ea8",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pcd_ex.c": "a80d49dca29daaff73983cc30b046b8416f8fab69a62e5294992d969835095f6",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c": "6225a5fa2d7b7c17549e566fd5f556bee1dc3fd23ea24efdbabc2100aa58b143",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c": "eb7503a6a1f0b7bfd7488bd851ae3cac2b88194f344847c74e0a15e563b41db1",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c": "70300c43e2ca300b8ce01d721801b649deaf1e50648a34a399071917ccd7215f",
+      "vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_usb.c": "f3ae957bb4c53e811a811064d029535165530c48fdcc2eb943c0983cc3c583bf",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h": "2bc428e2226229a206723d0441d37003a390ceea9acb7825b02dacf3afc05a1e",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc_if_template.h": "9bda55cc0ca0617d44481937d0204b2472baf86b01d8288e5afcd51f270a2da3",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c": "9bf6b6c49a7faab7bdc465dae5df52bcc878720bd354c8596b51e16d6e210ecb",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc_if_template.c": "7a726b3aa7d1ad92af984fa6ad7a1602397407ac3c167cf341a843826cab1d54",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_conf_template.h": "2d46eaf01099532b1540f8d81cddd775b598b36b43ebc19cebc3e7b4fefa8f0e",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h": "5df2712273bfd522fd5164385acc22d6c2fb899b4dc6ed09823a3698e0963c5e",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h": "e0e1fd6d50790b5f82e633e3683908ace0f5e8339884648a013c6e0dfe27c0e4",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h": "1fb60258c3705a07f04c32d5b6229a8b8125f90fd72ee06959c098d94485dd05",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_desc_template.h": "71f401cb6d6d9e2e110e688c684dc99ddc3d87f79d0179cff31ec2910bb6bce8",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h": "b3c4df07bf76dd3371def96c9de53bb2db991f6cecc4601da890641f24376175",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_conf_template.c": "1389204adac276267d6c8c385aafbbe4572379e3e9b393783922a3677eb384ae",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c": "9696a4d61c9e05cd7989936792b15b88f9b7be567d2a927b4feeb0685f1a73a2",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c": "339046117dd385d4257508a2b240067b7624a4b6df3dd170b72d2cdac215ffa9",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_desc_template.c": "973b7a7201930009dc7de2fbeeeffef867e5bb055d1abf6b4600ad2c1726d3b4",
+      "vendor/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c": "a89f4e80bb59bcd369fe412b12915ab4392bb110bb54f0b93dd521c43669dbc1"
+    },
+    "independent_git_index_build": {
+      "git_tree": "c884cb50c6007a77a55de657c14a3f26a8c628a5",
+      "bin_sha256": "1e4c8e2348f4561685c335a5efe9ddb2a82c8bbdc16387eec6f222bc4a49ac71",
+      "bytes": 43212,
+      "matches_frozen": true
+    }
+  },
+  "limits": [
+    "Two-node short-cable bench qualification; does not qualify a fully loaded 32-device bus or longer cables",
+    "No calibrated voltage reference, physical-channel stimulus, oscilloscope timing or wire BER capture",
+    "Trace file is sampled; its digest covers all generated trace records, not a wire capture",
+    "Storage preservation is verified by identity, saved address and calibration readbacks; durable request-ID reservations intentionally advance the journal"
+  ]
+}

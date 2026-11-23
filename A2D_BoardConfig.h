@@ -1,0 +1,12 @@
+#ifndef A2D_BOARD_CONFIG_H
+#define A2D_BOARD_CONFIG_H
+#include "A2D_MCP3425.h"
+#define A2D_4CH_ISO_ADC_CH1_I2C_ADDR 0x68
+#define A2D_4CH_ISO_ADC_CH2_I2C_ADDR 0x69
+#define A2D_4CH_ISO_ADC_CH3_I2C_ADDR 0x6A
+#define A2D_4CH_ISO_ADC_CH4_I2C_ADDR 0x6B
+#define A2D_4CH_ISO_ADC_NUM_CHANNELS 4
+#define MANUFACTURER "A2D Electronics"
+#define MODEL "4CH Isolated ADC"
+#define VERSION "V5.0.1"
+#endif

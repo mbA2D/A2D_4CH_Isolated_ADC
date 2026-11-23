@@ -1,8 +1,13 @@
 
 .vs
 .pio/
+build/
+CMakeUserPresets.json
+upload.local.json
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+!.vscode/tasks.json
 __pycache__/
 platformio.local.ini
+.venv/
